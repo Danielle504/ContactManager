@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+
+		<title>Contacts Manager</title>
+		<meta name="description" content="COP 4020 small CRUD project login page.">
+	</head>
+
+	<body>
+		<noscript>JavaScript is required to use this page properly. Please unable it and reload the page.</noscript>
+
+		<header>
+			<h1>Contacts Manager</h1>
+		</header>
+
+		<main>
+			<form>
+				<h2>Login</h2>
+
+				<label>Username
+					<input
+						type="text"
+						minlength="4"
+						maxlength="32"
+						placeholder="Maggie Smith"
+						spellcheck="false"
+					>
+				</label>
+
+				<label>Password
+					<input
+						type="password"
+						minlength="8"
+						maxlength="64"
+						placeholder="hunter2"
+					>
+				</label>
+			</form>
+
+			<button>Or register</button>
+		</main>
+
+		<footer>
+			&copy; <span class="year"></span>
+
+			<script>
+				document.getElementsByClassName('year').item(0).innerHTML = new Date().getFullYear();
+			</script>
+		</footer>
+	</body>
+</html>
