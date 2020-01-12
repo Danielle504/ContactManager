@@ -34,6 +34,12 @@
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+* {
+	--black: #0d0d0d;
+	--white: #f2f2f2;
+	--off-white: #b3b3b3;
+}
+
 body {
 	font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 
@@ -41,10 +47,20 @@ body {
 
 	display: flex;
 	flex-direction: column;
+
+	background: var(--black);
+	color: var(--white);
 }
+
+/* Basic Formatting styling */
 
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'Lato', Verdana, Geneva, sans-serif;
+}
+
+h1 {
+	font-size: 32px;
+	font-weight: 700;
 }
 
 header {
@@ -70,13 +86,123 @@ main {
 	justify-content: center;
 }
 
+/* Main body styling */
+
+#form-surround {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	width: 300px;
+	height: 400px;
+}
+
 form {
 	text-align: center;
 
-	width: 400px;
-
 	display: flex;
 	flex-direction: column;
-	align-items: center;
 	justify-content: center;
+	align-items: center;
+}
+
+input {
+	height: 2em;
+	width: 100%;
+	padding: 0.1em;
+
+	border: none;
+	border-bottom: 1px solid var(--white);
+	background: none;
+	color: var(--white);
+}
+
+label {
+	color: var(--off-white);
+}
+
+.input-surround {
+	font-size: 18px;
+
+	margin: 10px;
+	width: 80%;
+}
+
+/* For floating labels */
+
+form > div {
+	position: relative;
+}
+
+form > div > label {
+	position: absolute;
+	top: 4px;
+	bottom: 0;
+	left: 0;
+	width: 40%;
+}
+
+input:focus + label {
+	top: 2.5em;
+	width: 100%;
+
+	font-size: 14px;
+	text-align: left;
+	color: var(--off-white);
+}
+
+/* Buttons */
+
+#send-btn {
+	border: 2px solid var(--white);
+	border-radius: 4px;
+
+	background-color: inherit;
+	color: var(--white);
+
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+
+	height: 2em;
+	width: 80%;
+	margin-top: 15px;
+	margin-bottom: 4px;
+}
+
+#send-btn:focus {
+	color: white;
+	text-decoration: underline;
+}
+
+#toggle-type-btn {
+	border: none;
+
+	font-size: 16px;
+	text-decoration: underline;
+
+	background-color: inherit;
+	color: var(--white);
+}
+
+#toggle-type-btn:focus {
+	border: 1px solid var(--off-white);
+}
+
+@media (any-hover: hover) {
+	#send-btn:hover {
+		color: var(--black);
+		background-color: var(--white);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	label:hover {
+		cursor: text;
+	}
+
+	#toggle-type-btn:hover {
+		cursor: pointer;
+	}
 }
