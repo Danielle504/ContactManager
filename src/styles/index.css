@@ -110,16 +110,11 @@ form {
 input {
 	height: 2em;
 	width: 100%;
-	padding: 0.1em;
 
 	border: none;
 	border-bottom: 1px solid var(--white);
 	background: none;
 	color: var(--white);
-}
-
-label {
-	color: var(--off-white);
 }
 
 .input-surround {
@@ -135,17 +130,19 @@ form > div {
 	position: relative;
 }
 
-form > div > label {
+label {
+	color: var(--off-white);
+
 	position: absolute;
 	top: 4px;
-	bottom: 0;
 	left: 0;
 	width: 40%;
+
+	transition: 0.2s;
 }
 
 input:focus + label {
 	top: 2.5em;
-	width: 100%;
 
 	font-size: 14px;
 	text-align: left;
@@ -169,6 +166,8 @@ input:focus + label {
 	width: 80%;
 	margin-top: 15px;
 	margin-bottom: 4px;
+
+	transition: background-color 0.2s;
 }
 
 #send-btn:focus {
