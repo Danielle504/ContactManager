@@ -90,6 +90,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			info = info.parentNode;
 		}
 
+		const contact = info;
 		info = info.children[CONT_INFO];
 
 		if (editing) {
@@ -112,6 +113,35 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			}
 			else if (event.target.getAttribute(`src`) === `./img/edit-icon.svg`) {
 				event.target.setAttribute(`src`, `./img/check.svg`);
+			}
+
+			const items = contact.getElementsByTagName(`P`);
+			const length = items.length;
+
+			for (let i=0;i<length;i++) {
+				const item = items.item(0);
+				console.log(item.innerHTML);
+				const replacer = document.createElement(`input`);
+				let [label, value] = item.innerHTML.split(`:`);
+
+				label = label.trim();
+				value = value.trim();
+
+				item.replaceWith(replacer);
+
+				switch(label) {
+					case `Email`:
+						replacer.setAttribute(`type`, `email`);
+						break;
+					case `Phone`:
+						replacer.setAttribute(`type`, `tel`);
+						break;
+					case `Address`:
+						replacer.setAttribute(`type`, `text`);
+						break;
+					default:
+						console.error(`oops`);
+				}
 			}
 
 			editing = true;
