@@ -10,6 +10,8 @@
 
 		<link rel="stylesheet" href="./styles/reset.css" type="text/css">
 		<link rel="stylesheet" href="./styles/index.css" type="text/css">
+
+		<script src="./scripts/index.js"></script>
 	</head>
 
 	<body>
@@ -20,38 +22,38 @@
 		</header>
 
 		<main>
-			<form>
-				<h2>Login</h2>
+			<div id="form-surround">
+				<form>
+					<div class="input-surround">
+						<input
+							type="text"
+							id="username"
+							name="username"
+							minlength="4"
+							maxlength="64"
+							spellcheck="false"
+							required
+						>
+						<label for="username">Username</label>
+					</div>
 
-				<label>Username
-					<input
-						type="text"
-						minlength="4"
-						maxlength="32"
-						placeholder="Maggie Smith"
-						spellcheck="false"
-					>
-				</label>
+					<div class="input-surround">
+						<input
+							type="password"
+							id="password"
+							name="password"
+							minlength="8"
+							maxlength="64"
+							required
+						>
+						<label for="password">Password</label>
+					</div>
 
-				<label>Password
-					<input
-						type="password"
-						minlength="8"
-						maxlength="64"
-						placeholder="hunter2"
-					>
-				</label>
-			</form>
+					<button id="send-btn">Log in</button>
+				</form>
 
-			<button>Or register</button>
+				<button id="toggle-type-btn">Or register</button>
+			</div>
 		</main>
-
-		<footer>
-			&copy; <span class="year"></span>
-
-			<script>
-				document.getElementsByClassName('year').item(0).innerHTML = new Date().getFullYear();
-			</script>
-		</footer>
 	</body>
 </html>
