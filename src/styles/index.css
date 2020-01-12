@@ -151,6 +151,13 @@ input:focus + label {
 
 /* Buttons */
 
+#send-link {
+	width: 80%;
+	height: 2em;
+	margin-top: 15px;
+	margin-bottom: 4px;
+}
+
 #send-btn {
 	border: 2px solid var(--white);
 	border-radius: 4px;
@@ -162,10 +169,8 @@ input:focus + label {
 	font-weight: 700;
 	text-align: center;
 
-	height: 2em;
-	width: 80%;
-	margin-top: 15px;
-	margin-bottom: 4px;
+	height: 100%;
+	width: 100%;
 
 	transition: background-color 0.2s;
 }
