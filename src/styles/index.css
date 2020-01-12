@@ -171,12 +171,13 @@ input:focus + label {
 }
 
 #send-btn:focus {
-	color: white;
+	color: var(--black);
+	background-color: var(--white);
 	text-decoration: underline;
 }
 
 #toggle-type-btn {
-	border: none;
+	border: 1px solid var(--black);
 
 	font-size: 16px;
 	text-decoration: underline;
