@@ -13,7 +13,9 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	};
 
 	const handleSend = event => {
-		console.log(`This is where I'd send my info. If I had any!`);
+		if (usernameInput.validity.valid && passwordInput.validity.valid) {
+			console.log(`This is where I'd send my info. If I had any!`);
+		}
 	};
 
 	const toggleType = event => {
