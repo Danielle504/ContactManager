@@ -7,7 +7,10 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// show the edit and delte buttons
 	const showContactCtrl = event => {
+		console.log(`hit`);
+		console.log(event);
 		const controls = event.target.children[CONT_HOVER].children[CONT_CTRL];
+		console.log(controls);
 
 		if (controls == undefined || !controls.classList.contains(`contact-ctrl`)) {
 			return;
@@ -190,11 +193,16 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// use append child because it returns the added element
 	const createNode = () => {
+		// contact container
 		const contact = document.createElement(`div`);
 		contact.setAttribute(`class`, `contact`);
 		contact.setAttribute(`tabindex`, `0`);
 
-		const main = contact.appendChild(document.createElement(`div`));
+		const hover = contact.appendChild(document.createElement(`div`));
+		hover.setAttribute(`class`, `contact-hover-box`);
+
+		// contact name and picture
+		const main = hover.appendChild(document.createElement(`div`));
 		main.setAttribute(`class`, `contact-main`);
 
 		const picture = main.appendChild(document.createElement(`img`));
@@ -205,24 +213,28 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		const name = main.appendChild(document.createElement(`h3`));
 		name.innerHTML = ``;
 
-		const control = contact.appendChild(document.createElement(`div`));
+		// edit and delete buttons
+		const control = hover.appendChild(document.createElement(`div`));
 		control.setAttribute(`class`, `contact-ctrl`);
 		control.setAttribute(`aria-hidden`, `true`);
 
 		const edit = control.appendChild(document.createElement(`button`));
 		edit.setAttribute(`class`, `edit-btn`);
+		edit.onclick = editClick;
 
 		const editPicture = edit.appendChild(document.createElement(`img`));
 		editPicture.setAttribute(`src`, `./img/edit-icon.svg`);
 		editPicture.setAttribute(`alt`, `Edit`);
 
-		const deleteButton = edit.appendChild(document.createElement(`button`));
+		const deleteButton = control.appendChild(document.createElement(`button`));
 		deleteButton.setAttribute(`class`, `delete-btn`);
+		deleteButton.onclick = deleteClick;
 
 		const deletePicture = deleteButton.appendChild(document.createElement(`img`));
 		deletePicture.setAttribute(`src`, `./img/delete-icon.svg`);
 		deletePicture.setAttribute(`alt`, `Delete`);
 
+		// contact info
 		const info = contact.appendChild(document.createElement(`div`));
 		info.setAttribute(`class`, `contact-info`);
 		info.setAttribute(`aria-hidden`, `true`);
@@ -237,6 +249,12 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 		const home = address.appendChild(document.createElement(`p`));
 		home.innerHTML = `Address: `;
+
+		contact.onmouseenter = showContactCtrl;
+		contact.onmouseleave = hideContactCtrl;
+
+		contact.onclick = contactClick;
+
 		return contact;
 	};
 
@@ -244,10 +262,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const addClick = event => {
 		console.log(`clicked add`);
 		const newContact = contactSurround.appendChild(createNode());
-
-		editClick({
-			target: newContact
-		});
 	};
 
 	// switches color of + when hovering over add button
