@@ -101,6 +101,28 @@ document.addEventListener(`DOMContentLoaded`, () => {
 				event.target.setAttribute(`src`, `./img/edit-icon.svg`);
 			}
 
+			const items = contact.getElementsByTagName(`label`);
+			const length = items.length;
+			const address = document.createElement(`address`);
+
+			const name = contact.getElementsByTagName(`input`).item(0);
+			const nameH = document.createElement(`h3`);
+			nameH.innerHTML = name.value;
+
+			name.replaceWith(nameH);
+
+			for (let i=0;i<length;i++) {
+				const item = items.item(0);
+
+				const replacer = document.createElement(`p`);
+				replacer.innerHTML = [item.childNodes[0].data, item.children[0].value].join(` `)
+
+				item.remove();
+				address.append(replacer)
+			}
+
+			info.append(address);
+
 			editing = false;
 		}
 		else {
@@ -120,37 +142,112 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 			for (let i=0;i<length;i++) {
 				const item = items.item(0);
-				console.log(item.innerHTML);
-				const replacer = document.createElement(`input`);
+				const replacer = document.createElement(`label`);
+
 				let [label, value] = item.innerHTML.split(`:`);
 
 				label = label.trim();
 				value = value.trim();
 
+				replacer.innerHTML = `${label}:`;
+
 				item.replaceWith(replacer);
+
+				replacer.append(document.createElement(`input`));
+				replacer.children[0].value = value;
 
 				switch(label) {
 					case `Email`:
-						replacer.setAttribute(`type`, `email`);
+						replacer.children[0].setAttribute(`type`, `email`);
 						break;
 					case `Phone`:
-						replacer.setAttribute(`type`, `tel`);
+						replacer.children[0].setAttribute(`type`, `tel`);
 						break;
 					case `Address`:
-						replacer.setAttribute(`type`, `text`);
+						replacer.children[0].setAttribute(`type`, `text`);
 						break;
 					default:
 						console.error(`oops`);
 				}
+
+				replacer.parentNode.parentNode.append(replacer.cloneNode(true));
+				replacer.remove();
 			}
+
+			contact.getElementsByTagName(`ADDRESS`).item(0).remove();
+
+			const name = contact.getElementsByTagName(`H3`).item(0);
+			const nameInput = document.createElement(`input`);
+			nameInput.setAttribute(`type`, `text`);
+			nameInput.setAttribute(`aria-label`, `Name`);
+			nameInput.value = name.innerHTML;
+
+			name.replaceWith(nameInput);
 
 			editing = true;
 		}
 	};
 
+	// use append child because it returns the added element
+	const createNode = () => {
+		const contact = document.createElement(`div`);
+		contact.setAttribute(`class`, `contact`);
+		contact.setAttribute(`tabindex`, `0`);
+
+		const main = contact.appendChild(document.createElement(`div`));
+		main.setAttribute(`class`, `contact-main`);
+
+		const picture = main.appendChild(document.createElement(`img`));
+		picture.setAttribute(`class`, `profile-picture`);
+		picture.setAttribute(`src`, `./img/square-placeholder.jpg`);
+		picture.setAttribute(`alt`, ``);
+
+		const name = main.appendChild(document.createElement(`h3`));
+		name.innerHTML = ``;
+
+		const control = contact.appendChild(document.createElement(`div`));
+		control.setAttribute(`class`, `contact-ctrl`);
+		control.setAttribute(`aria-hidden`, `true`);
+
+		const edit = control.appendChild(document.createElement(`button`));
+		edit.setAttribute(`class`, `edit-btn`);
+
+		const editPicture = edit.appendChild(document.createElement(`img`));
+		editPicture.setAttribute(`src`, `./img/edit-icon.svg`);
+		editPicture.setAttribute(`alt`, `Edit`);
+
+		const deleteButton = edit.appendChild(document.createElement(`button`));
+		deleteButton.setAttribute(`class`, `delete-btn`);
+
+		const deletePicture = deleteButton.appendChild(document.createElement(`img`));
+		deletePicture.setAttribute(`src`, `./img/delete-icon.svg`);
+		deletePicture.setAttribute(`alt`, `Delete`);
+
+		const info = contact.appendChild(document.createElement(`div`));
+		info.setAttribute(`class`, `contact-info`);
+		info.setAttribute(`aria-hidden`, `true`);
+
+		const address = info.appendChild(document.createElement(`address`));
+
+		const email = address.appendChild(document.createElement(`p`));
+		email.innerHTML = `Email: `;
+
+		const phone = address.appendChild(document.createElement(`p`));
+		phone.innerHTML = `Phone: `;
+
+		const home = address.appendChild(document.createElement(`p`));
+		home.innerHTML = `Address: `;
+		return contact;
+	};
+
 	// adds in a new contact and allows the info to be edited
 	const addClick = event => {
 		console.log(`clicked add`);
+		const newContact = contactSurround.appendChild(createNode());
+
+		editClick({
+			target: newContact
+		});
 	};
 
 	// switches color of + when hovering over add button
@@ -172,6 +269,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const deleteButtons = document.getElementsByClassName(`delete-btn`);
 	const editButtons = document.getElementsByClassName(`edit-btn`);
 	const addButton = document.getElementById(`add-btn`);
+	const contactSurround = document.getElementById(`contacts-surround`);
 
 	// adding event listeners
 	addButton.onclick = addClick;
