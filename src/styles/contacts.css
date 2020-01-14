@@ -347,6 +347,12 @@ address p {
 	}
 }
 
+@media screen and (max-width: 600px) {
+	#contacts-surround {
+		width: 90%;
+	}
+}
+
 @media screen and (max-width: 450px) {
 	#contacts-surround {
 		border: none;
@@ -359,11 +365,5 @@ address p {
 
 	.contact-input {
 		width: 100%;
-	}
-}
-
-@media screen and (max-width: 600px) {
-	#contacts-surround {
-		width: 90%;
 	}
 }
