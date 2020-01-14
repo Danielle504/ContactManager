@@ -5,10 +5,8 @@ const CONT_CTRL = 1;
 document.addEventListener(`DOMContentLoaded`, () => {
 	let editing = false;
 
-	// show the edit and delte buttons
+	// show the edit and delete buttons
 	const showContactCtrl = event => {
-		console.log(`hit`);
-		console.log(event);
 		const controls = event.target.children[CONT_HOVER].children[CONT_CTRL];
 		console.log(controls);
 
@@ -39,16 +37,19 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 		const target = event.target;
 
+		// if clicking on the edit/delete buttons
 		if (target.nodeName === `BUTTON` || target.parentNode.nodeName === `BUTTON`) {
 			return;
 		}
 
+		// change target when clicking on the name and image
 		if (target.nodeName === `H3` || target.nodeName === `IMG`) {
 			contactClick({
 				target: target.parentNode.parentNode.parentNode
 			});
 		}
 
+		// if you clicked on the hover box the target needs to be the parent
 		if (target.classList.contains(`contact-hover-box`)) {
 			contactClick({
 				target: target.parentNode
@@ -57,6 +58,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 		const hover = target.children[CONT_HOVER];
 
+		// if hover or info don't exist (i.e. detected wrong click) then do nothing
 		if (hover == undefined || hover.children[CONT_CTRL] == undefined || !hover.children[CONT_CTRL].classList.contains(`contact-ctrl`)) {
 			return;
 		}
@@ -68,6 +70,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			return;
 		}
 
+		// show the important stuff
 		if (info.getAttribute(`aria-hidden`) === `true`) {
 			info.setAttribute(`aria-hidden`, `false`);
 			controls.setAttribute(`aria-hidden`, `false`);
@@ -97,6 +100,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		info = info.children[CONT_INFO];
 
 		if (editing) {
+			// toggle between the button pictures for the edit button
 			if (event.target.children[0] != undefined && event.target.children[0].getAttribute(`src`) === `./img/check.svg`) {
 				event.target.children[0].setAttribute(`src`, `./img/edit-icon.svg`);
 			}
@@ -108,8 +112,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			const length = items.length;
 			const address = document.createElement(`address`);
 
+			// change the name and info to paragraphs or headers
+			// containing the respective input's value
 			const name = contact.getElementsByTagName(`input`).item(0);
 			const nameH = document.createElement(`h3`);
+
 			nameH.innerHTML = name.value;
 
 			name.replaceWith(nameH);
@@ -129,10 +136,12 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			editing = false;
 		}
 		else {
+			// if the info box is hidden show it
 			if (info.getAttribute(`aria-hidden`) === `true`) {
 				info.setAttribute(`aria-hidden`, `false`);
 			}
 
+			// toggle the edit button image
 			if (event.target.children[0] != undefined && event.target.children[0].getAttribute(`src`) === `./img/edit-icon.svg`) {
 				event.target.children[0].setAttribute(`src`, `./img/check.svg`);
 			}
@@ -140,6 +149,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 				event.target.setAttribute(`src`, `./img/check.svg`);
 			}
 
+			// replace all the paragraphs (contact info) with input
+			// boxes that have the correct input type
 			const items = contact.getElementsByTagName(`P`);
 			const length = items.length;
 
@@ -179,6 +190,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 			contact.getElementsByTagName(`ADDRESS`).item(0).remove();
 
+			// replace the name with an input
 			const name = contact.getElementsByTagName(`H3`).item(0);
 			const nameInput = document.createElement(`input`);
 			nameInput.setAttribute(`type`, `text`);
@@ -198,6 +210,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		contact.setAttribute(`class`, `contact`);
 		contact.setAttribute(`tabindex`, `0`);
 
+		// the part of the collapsed node that is hovered over
 		const hover = contact.appendChild(document.createElement(`div`));
 		hover.setAttribute(`class`, `contact-hover-box`);
 
