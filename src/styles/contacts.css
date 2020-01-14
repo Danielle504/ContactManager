@@ -218,6 +218,8 @@ address {
 	width: 30px;
 	height: 30px;
 
+	margin-right: 3px;
+
 	border: none;
 	border-radius: 100%;
 	background-color: var(--white);
@@ -232,6 +234,8 @@ address {
 	width: 30px;
 	height: 30px;
 	padding: 0;
+
+	margin-left: 3px;
 
 	border: none;
 	background-color: inherit;
