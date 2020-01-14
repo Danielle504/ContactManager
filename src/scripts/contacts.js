@@ -55,6 +55,12 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			});
 		}
 
+		if (target.classList.contains(`contact-main`)) {
+			contactClick({
+				target: target.parentNode.parentNode
+			});
+		}
+
 		const hover = target.children[CONT_HOVER];
 
 		// if hover or info don't exist (i.e. detected wrong click) then do nothing
@@ -94,7 +100,26 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		controls.setAttribute(`aria-hidden`, `true`);
 		hoverBox.children[2].setAttribute(`aria-hidden`, `false`);
 
-		// event.target.parentNode.parentNode.parentNode.parentNode.remove();
+		const cancel = () => {
+			controls.setAttribute(`aria-hidden`, `false`);
+			hoverBox.children[2].setAttribute(`aria-hidden`, `true`);
+
+			yesButton.onclick = null;
+			noButton.onclick = null;
+		};
+
+		const confirm = () => {
+			yesButton.onclick = null;
+			noButton.onclick = null;
+
+			hoverBox.parentNode.remove();
+		};
+
+		const yesButton = hoverBox.children[2].children[1];
+		const noButton = hoverBox.children[2].children[2];
+
+		yesButton.onclick = confirm;
+		noButton.onclick = cancel;
 	};
 
 	// shows contact info if not already up
@@ -164,8 +189,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			const items = contact.getElementsByTagName(`P`);
 			const length = items.length;
 
-			for (let i=0;i<length;i++) {
-				const item = items.item(0);
+			for (let i=1;i<length;i++) {
+				const item = items.item(1);
 				const replacer = document.createElement(`label`);
 
 				let [label, value] = item.innerHTML.split(`:`);
