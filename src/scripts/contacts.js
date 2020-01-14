@@ -8,7 +8,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	// show the edit and delete buttons
 	const showContactCtrl = event => {
 		const controls = event.target.children[CONT_HOVER].children[CONT_CTRL];
-		console.log(controls);
 
 		if (controls == undefined || !controls.classList.contains(`contact-ctrl`)) {
 			return;
@@ -273,8 +272,12 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// adds in a new contact and allows the info to be edited
 	const addClick = event => {
-		console.log(`clicked add`);
 		const newContact = contactSurround.appendChild(createNode());
+
+		// this is ugly but targets the edit button of the created node
+		editClick({
+			target: newContact.children[CONT_HOVER].children[CONT_CTRL].children[0]
+		});
 	};
 
 	// switches color of + when hovering over add button
