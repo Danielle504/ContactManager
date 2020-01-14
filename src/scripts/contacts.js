@@ -13,6 +13,10 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			return;
 		}
 
+		if (controls.parentNode.children[2].getAttribute(`aria-hidden`) === `false`) {
+			return;
+		}
+
 		controls.setAttribute(`aria-hidden`, `false`);
 	};
 
@@ -312,6 +316,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// adds in a new contact and allows the info to be edited
 	const addClick = event => {
+		event.preventDefault();
+
 		const newContact = contactSurround.appendChild(createNode());
 
 		// this is ugly but targets the edit button of the created node
