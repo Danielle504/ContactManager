@@ -83,7 +83,18 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	// @TODO
 	// add confirmation
 	const deleteClick = event => {
-		event.target.parentNode.parentNode.parentNode.parentNode.remove();
+		let controls = event.target.parentNode;
+
+		if (event.target.tagName === `IMG`) {
+			controls = controls.parentNode;
+		}
+
+		const hoverBox = controls.parentNode;
+
+		controls.setAttribute(`aria-hidden`, `true`);
+		hoverBox.children[2].setAttribute(`aria-hidden`, `false`);
+
+		// event.target.parentNode.parentNode.parentNode.parentNode.remove();
 	};
 
 	// shows contact info if not already up

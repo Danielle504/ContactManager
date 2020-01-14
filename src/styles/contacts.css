@@ -296,6 +296,37 @@ address {
 	height: 100%;
 }
 
+.confirmation: {
+	font-size: 16px;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.confirmation button {
+	border: none;
+	border-radius: 100%;
+
+	font-weight: 700;
+
+	height: 30px;
+	width: 30px;
+	flex-grow: 0;
+	flex-shrink: 0;
+
+	background-color: var(--white);
+}
+
+.confirmation-y {
+	color: red;
+}
+
+.confirmation-n {
+	color: var(--black);
+}
+
 h3 {
 	font-size: 22px;
 }
