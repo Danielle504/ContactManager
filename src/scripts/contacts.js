@@ -18,6 +18,10 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// hide the edit and delete buttons
 	const hideContactCtrl = event => {
+		if (event.target.children[CONT_HOVER].children[0].children[1].nodeName !== `H3`) {
+			return;
+		}
+
 		const controls = event.target.children[CONT_HOVER].children[CONT_CTRL];
 
 		if (controls == undefined || !controls.classList.contains(`contact-ctrl`)) {
