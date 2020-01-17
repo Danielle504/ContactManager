@@ -18,7 +18,7 @@
 
   if (!mysqli_query($con, $query))
   {
-    echo "Error: " . $query . "<br>" . mysqli_error($con);
+    die("Error: " . $query . "<br>" . mysqli_error($con));
   }
   mysqli_close($con);
 ?>
