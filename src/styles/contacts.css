@@ -120,7 +120,7 @@ address {
 	height: 3em;
 	width: 40%;
 	min-width: 180px;
-	margin: 15px;
+	margin: 10px;
 
 	border: 2px solid var(--white);
 	border-radius: 4px;
@@ -157,12 +157,78 @@ address {
 	border-radius: 6px;
 
 	width: 80%;
+	max-width: 800px;
+	min-width: 300px;
 	height: 100%;
 	max-height: 100%;
 
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+
+/* For floating labels */
+
+.input-surround {
+	position: relative;
+
+	width: 60%;
+	margin-bottom: 2em;
+}
+
+.input-surround input {
+	height: 2em;
+	width: 100%;
+
+	font-size: 22px;
+
+	border: none;
+	border-bottom: 2px solid var(--white);
+	background: none;
+	color: var(--white);
+}
+
+.input-surround label {
+	color: var(--off-white);
+
+	text-align: left;
+	font-size: 22px;
+
+	position: absolute;
+	top: 4px;
+	left: 0;
+	width: 40%;
+
+	cursor: text;
+
+	transition: 0.2s;
+
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	justify-content: flex-start;
+}
+
+.input-surround label img {
+	height: 18px;
+	width: 18px;
+
+	margin-right: 4px;
+}
+
+.input-surround input:focus + label {
+	top: 2.3em;
+
+	font-size: 18px;
+	text-align: left;
+	color: var(--off-white);
+}
+
+.input-surround input:focus + label img {
+	width: 14px;
+	height: 14px;
+}
+
+/* Contact styling */
 
 .contact {
 	border: none;
@@ -193,7 +259,10 @@ address {
 
 	margin-left: 4px;
 	width: 100%;
+
+	max-width: 487px;
 }
+
 .contact label {
 	font-size: 18px;
 	width: 90%;
@@ -296,13 +365,17 @@ address {
 	height: 100%;
 }
 
-.confirmation: {
-	font-size: 16px;
+.confirmation {
+	font-size: 14px;
 
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
+}
+
+.confirmation p {
+	margin-right: 4px;
 }
 
 .confirmation button {
@@ -321,9 +394,11 @@ address {
 
 .confirmation-y {
 	color: red;
+	margin-right: 2px;
 }
 
 .confirmation-n {
+	margin-left: 2px;
 	color: var(--black);
 }
 
@@ -335,7 +410,7 @@ address p {
 	font-size: 18px;
 }
 
-@media(any-hover: hover) {
+@media (any-hover: hover) {
 	#add-btn:hover {
 		background-color: var(--white);
 		color: var(--black);

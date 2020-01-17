@@ -340,17 +340,34 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		}
 	};
 
+	const searchBlur = event => {
+		if (event.target.value !== ``) {
+			event.target.labels[0].setAttribute(`style`, `visibility: hidden;`);
+		}
+		else {
+			event.target.labels[0].setAttribute(`style`, `visibility: visible`);
+		}
+	};
+
+	const searchFocus = event => {
+		event.target.labels[0].setAttribute(`style`, `visibility: visible;`);
+	};
+
 	// elements selection
 	const contacts = document.getElementsByClassName(`contact`);
 	const deleteButtons = document.getElementsByClassName(`delete-btn`);
 	const editButtons = document.getElementsByClassName(`edit-btn`);
 	const addButton = document.getElementById(`add-btn`);
 	const contactSurround = document.getElementById(`contacts-surround`);
+	const searchInput = document.getElementsByClassName(`input-surround`)[0].children[0];
 
 	// adding event listeners
 	addButton.onclick = addClick;
 	addButton.onmouseenter = addHover;
 	addButton.onmouseleave = addLeave;
+
+	searchInput.onblur = searchBlur;
+	searchInput.onfocus = searchFocus;
 
 	for (let i=0;i<contacts.length;i++) {
 		contacts.item(i).onmouseenter = showContactCtrl;
