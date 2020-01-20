@@ -311,11 +311,7 @@ address {
 }
 
 .contact-info input[type="email"] {
-	margin-left: 25px;
-}
-
-.contact-info input[type="tel"] {
-	margin-left: 18px;
+	margin-left: 12px;
 }
 
 .contact-hover-box {

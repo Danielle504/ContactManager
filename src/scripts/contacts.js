@@ -94,8 +94,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	};
 
 	// deletes the main contact when the delete icon is pressed
-	// @TODO
-	// add confirmation
 	const deleteClick = event => {
 		let controls = event.target.parentNode;
 
@@ -267,7 +265,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		picture.setAttribute(`alt`, ``);
 
 		const name = main.appendChild(document.createElement(`h3`));
-		name.innerHTML = ``;
+		const firstName = main.appendChild(document.createElement(`span`));
+		firstName.innerHTML = ``;
+		const lastName = main.appendChild(document.createElement(`span`));
+		lastName.innerHTML = ``;
+		name.childNodes.splice(1, 0, ` `);
 
 		// edit and delete buttons
 		const control = hover.appendChild(document.createElement(`div`));
@@ -302,9 +304,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 		const phone = address.appendChild(document.createElement(`p`));
 		phone.innerHTML = `Phone: `;
-
-		const home = address.appendChild(document.createElement(`p`));
-		home.innerHTML = `Address: `;
 
 		contact.onmouseenter = showContactCtrl;
 		contact.onmouseleave = hideContactCtrl;
@@ -353,6 +352,84 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		event.target.labels[0].setAttribute(`style`, `visibility: visible;`);
 	};
 
+	const searchEnter = event => {
+		if (event.key === `Enter`) {
+			return contactArr.filter(contact => {
+				const contactName = ([contact.firstName, contact.lastName]).join(` `);
+
+				return contactName.contains(event.target.value);
+			});
+		}
+	};
+
+	// contArr is the array element, contHTML is the html element
+	// info is an object containing all the contact info
+	const setContactInfo = (contArr, contHTML, info) => {
+		contArr.firstName = info.firstName;
+		contArr.lastName = info.lastName;
+		contArr.email = info.email;
+		contArr.phone = info.phone;
+		contArr.cid = info.cid;
+
+		// set html
+	};
+
+	// get the contacts from the DB
+	// this is just example for now
+	const contactArr = [
+		{
+			cid: `0`,
+			firstName: `John`,
+			lastName: `Smith`,
+			email: `john@gmail.com`,
+			phone: `5555555555`
+		},
+		{
+			cid: `1`,
+			firstName: `Davis`,
+			lastName: `Goff`,
+			email: `davis@gmail.com`,
+			phone: `1234567890`
+		},
+		{
+			cid: `2`,
+			firstName: `Gaby`,
+			lastName: `Whoknows`,
+			email: `gaby@gmail.com`,
+			phone: `0987654321`
+		},
+		{
+			cid: `3`,
+			firstName: `Mary`,
+			lastName: `Jesus`,
+			email: `mary@gmail.com`,
+			phone: `7894561230`
+		},
+		{
+			cid: `4`,
+			firstName: `Joey`,
+			lastName: `Curitn`,
+			email: `joey@gmail.com`,
+			phone: `4567891230`
+		},
+		{
+			cid: `5`,
+			firstName: `Alpha`,
+			lastName: `Beta`,
+			email: `alpha@gmail.com`,
+			phone: `1237894560`
+		}
+	];
+
+	// add the contacts to the document
+	contactArr.forEach(contact => {
+		const contactBase = createNode();
+
+		// @TODO
+		// change the info
+		setContactInfo(contact, contactBase, Object.assign({}, contact));
+	});
+
 	// elements selection
 	const contacts = document.getElementsByClassName(`contact`);
 	const deleteButtons = document.getElementsByClassName(`delete-btn`);
@@ -368,6 +445,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	searchInput.onblur = searchBlur;
 	searchInput.onfocus = searchFocus;
+	searchInput.onkeydown = searchEnter;
 
 	for (let i=0;i<contacts.length;i++) {
 		contacts.item(i).onmouseenter = showContactCtrl;

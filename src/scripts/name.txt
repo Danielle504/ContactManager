@@ -1,0 +1,5 @@
+pregradcrisis.azurewebsites.net
+Add last name input
+Remove address
+Requests are post requests
+add user is uid and pword
