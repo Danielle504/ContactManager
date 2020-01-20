@@ -130,7 +130,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// shows contact info if not already up
 	// switches to editing the info
-	const editClick = event => {
+	const editClick = (event, newContact=false) => {
 		let info = event.target.parentNode.parentNode.parentNode;
 
 		if (!info.classList.contains(`contact`)) {
@@ -141,51 +141,40 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		info = info.children[CONT_INFO];
 
 		if (editing) {
-			// toggle between the button pictures for the edit button
-			if (event.target.children[0] != undefined && event.target.children[0].getAttribute(`src`) === `./img/check.svg`) {
-				event.target.children[0].setAttribute(`src`, `./img/edit-icon.svg`);
-			}
-			else if (event.target.getAttribute(`src`) === `./img/check.svg`) {
-				event.target.setAttribute(`src`, `./img/edit-icon.svg`);
-			}
-
 			const items = contact.getElementsByTagName(`label`);
-			const length = items.length;
-			const address = document.createElement(`address`);
-
-			// change the name and info to paragraphs or headers
-			// containing the respective input's value
-			const firstNameInput = contact.getElementsByClassName(`first-name-input`).item(0);
-			const lastNameInput = contact.getElementsByClassName(`last-name-input`).item(0);
-
-			const nameH = document.createElement(`h3`);
-
-			const firstNameSpan = document.createElement(`span`);
-			firstNameSpan.innerHTML = firstNameInput.value;
-
-			const lastNameSpan = document.createElement(`span`);
-			lastNameSpan.innerHTML = lastNameInput.value;
-
-			nameH.appendChild(firstNameSpan);
-			nameH.appendChild(document.createTextNode(` `));
-			nameH.appendChild(lastNameSpan);
-
-			firstNameInput.replaceWith(nameH);
-			lastNameInput.remove();
-
-			for (let i=0;i<length;i++) {
-				const item = items.item(0);
-
-				const replacer = document.createElement(`p`);
-				replacer.innerHTML = [item.childNodes[0].data, item.children[0].value].join(` `)
-
-				item.remove();
-				address.append(replacer)
-			}
-
-			info.append(address);
 
 			editing = false;
+
+			const created = {};
+			created.firstName = contact.getElementsByClassName(`first-name-input`).item(0).value;
+			created.lastName = contact.getElementsByClassName(`last-name-input`).item(0).value;
+
+			created.email = items.item(0).children[0].value;
+			created.phone = items.item(1).children[0].value.match(/\d+/g).join(``);
+
+			const cid = contact.getAttribute(`id`);
+
+			// make api call with cid
+			if (cid === null) {
+				// @TODO
+				// replace this
+				created.cid = contactArr.length;
+
+				contactArr.push(created);
+			}
+			else {
+				created.cid = cid
+				const index = contactArr.findIndex(element => element.cid === contact.getAttribute(`id`));
+
+				if (index === -1) {
+					console.error(`uh oh`);
+					return;
+				}
+
+				contactArr[index] = created;
+			}
+
+			displayContacts(contactArr);
 		}
 		else {
 			// if the info box is hidden show it
@@ -359,7 +348,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		// this is ugly but targets the edit button of the created node
 		editClick({
 			target: newContact.children[CONT_HOVER].children[CONT_CTRL].children[0]
-		});
+		}, true);
 	};
 
 	// switches color of + when hovering over add button
@@ -413,6 +402,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			contactSurround.childNodes[0].remove();
 		}
 
+		sortContacts(contacts);
+
 		contacts.forEach(contact => {
 			const contactBase = createNode();
 			setContactInfo(contact, contactBase, Object.assign({}, contact));
@@ -432,6 +423,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		const phoneFormatted = `(${info.phone.substring(0, 3)}) ${info.phone.substring(3, 6)}-${info.phone.substring(6)}`;
 
 		// set html
+		contHTML.setAttribute(`id`, info.cid)
 		const hover = contHTML.children[0];
 		const name = hover.children[0].children[1];
 		name.children[0].innerHTML = info.firstName;
@@ -439,6 +431,18 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		const contInfo = contHTML.children[1].children[0];
 		contInfo.children[0].innerHTML = `Email: ${info.email}`;
 		contInfo.children[1].innerHTML = `Phone: ${phoneFormatted}`;
+	};
+
+	const sortContacts = contacts => {
+		contacts.sort((a, b) => {
+			const compareFirst = a.firstName.localeCompare(b.firstName);
+
+			if (compareFirst === 0) {
+				return a.lastName.localeCompare(b.lastName);
+			}
+
+			return compareFirst;
+		});
 	};
 
 	// get the contacts from the DB
