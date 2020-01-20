@@ -155,12 +155,23 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 			// change the name and info to paragraphs or headers
 			// containing the respective input's value
-			const name = contact.getElementsByTagName(`input`).item(0);
+			const firstNameInput = contact.getElementsByClassName(`first-name-input`).item(0);
+			const lastNameInput = contact.getElementsByClassName(`last-name-input`).item(0);
+
 			const nameH = document.createElement(`h3`);
 
-			nameH.innerHTML = name.value;
+			const firstNameSpan = document.createElement(`span`);
+			firstNameSpan.innerHTML = firstNameInput.value;
 
-			name.replaceWith(nameH);
+			const lastNameSpan = document.createElement(`span`);
+			lastNameSpan.innerHTML = lastNameInput.value;
+
+			nameH.appendChild(firstNameSpan);
+			nameH.appendChild(document.createTextNode(` `));
+			nameH.appendChild(lastNameSpan);
+
+			firstNameInput.replaceWith(nameH);
+			lastNameInput.remove();
 
 			for (let i=0;i<length;i++) {
 				const item = items.item(0);
@@ -233,12 +244,22 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 			// replace the name with an input
 			const name = contact.getElementsByTagName(`H3`).item(0);
-			const nameInput = document.createElement(`input`);
-			nameInput.setAttribute(`type`, `text`);
-			nameInput.setAttribute(`aria-label`, `Name`);
-			nameInput.value = name.innerHTML;
+			const firstNameVal = name.children[0].innerHTML;
+			const lastNameVal = name.children[1].innerHTML;
 
-			name.replaceWith(nameInput);
+			const firstNameInput = document.createElement(`input`);
+			firstNameInput.setAttribute(`type`, `text`);
+			firstNameInput.setAttribute(`aria-label`, `First name`);
+			firstNameInput.setAttribute(`class`, `first-name-input`);
+			firstNameInput.value = firstNameVal;
+
+			const lastNameInput = document.createElement(`input`);
+			lastNameInput.setAttribute(`type`, `text`);
+			lastNameInput.setAttribute(`aria-label`, `Last name`);
+			lastNameInput.setAttribute(`class`, `last-name-input`);
+			lastNameInput.value = lastNameVal;
+
+			name.replaceWith(firstNameInput, lastNameInput);
 
 			editing = true;
 		}
@@ -265,11 +286,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		picture.setAttribute(`alt`, ``);
 
 		const name = main.appendChild(document.createElement(`h3`));
-		const firstName = main.appendChild(document.createElement(`span`));
+		const firstName = name.appendChild(document.createElement(`span`));
 		firstName.innerHTML = ``;
-		const lastName = main.appendChild(document.createElement(`span`));
+		name.appendChild(document.createTextNode(` `));
+		const lastName = name.appendChild(document.createElement(`span`));
 		lastName.innerHTML = ``;
-		name.childNodes.splice(1, 0, ` `);
 
 		// edit and delete buttons
 		const control = hover.appendChild(document.createElement(`div`));
@@ -291,6 +312,21 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		const deletePicture = deleteButton.appendChild(document.createElement(`img`));
 		deletePicture.setAttribute(`src`, `./img/delete-icon.svg`);
 		deletePicture.setAttribute(`alt`, `Delete`);
+
+		const confirm = hover.appendChild(document.createElement(`div`));
+		confirm.setAttribute(`class`, `confirmation`);
+		confirm.setAttribute(`aria-hidden`, `true`);
+
+		const dialogue = confirm.appendChild(document.createElement(`p`));
+		dialogue.innerHTML = `Are you sure?`;
+
+		const yes = confirm.appendChild(document.createElement(`button`));
+		yes.setAttribute(`class`, `confirmation-y`);
+		yes.innerHTML = `Y`;
+
+		const no = confirm.appendChild(document.createElement(`button`));
+		no.setAttribute(`class`, `confirmation-n`);
+		no.innerHTML = `N`;
 
 		// contact info
 		const info = contact.appendChild(document.createElement(`div`));
@@ -371,7 +407,16 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		contArr.phone = info.phone;
 		contArr.cid = info.cid;
 
+		const phoneFormatted = `(${info.phone.substring(0, 3)}) ${info.phone.substring(3, 6)}-${info.phone.substring(6)}`;
+
 		// set html
+		const hover = contHTML.children[0];
+		const name = hover.children[0].children[1];
+		name.children[0].innerHTML = info.firstName;
+		name.children[1].innerHTML = info.lastName;
+		const contInfo = contHTML.children[1].children[0];
+		contInfo.children[0].innerHTML = `Email: ${info.email}`;
+		contInfo.children[1].innerHTML = `Phone: ${phoneFormatted}`;
 	};
 
 	// get the contacts from the DB
@@ -421,13 +466,18 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		}
 	];
 
+	(document.getElementById(`loading`)).remove();
+
 	// add the contacts to the document
+	const contactSurround = document.getElementById(`contacts-surround`);
+
 	contactArr.forEach(contact => {
 		const contactBase = createNode();
 
 		// @TODO
 		// change the info
 		setContactInfo(contact, contactBase, Object.assign({}, contact));
+		contactSurround.appendChild(contactBase);
 	});
 
 	// elements selection
@@ -435,7 +485,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const deleteButtons = document.getElementsByClassName(`delete-btn`);
 	const editButtons = document.getElementsByClassName(`edit-btn`);
 	const addButton = document.getElementById(`add-btn`);
-	const contactSurround = document.getElementById(`contacts-surround`);
 	const searchInput = document.getElementsByClassName(`input-surround`)[0].children[0];
 
 	// adding event listeners

@@ -172,6 +172,8 @@ address {
 	position: relative;
 
 	width: 60%;
+	max-width: 700px;
+	min-width: 200px;
 	margin-bottom: 2em;
 }
 
@@ -258,9 +260,11 @@ address {
 	font-weight: 700;
 
 	margin-left: 4px;
-	width: 100%;
+}
 
-	max-width: 487px;
+.first-name-input, .last-name-input {
+	width: 40%;
+	max-width: 300px;
 }
 
 .contact label {
