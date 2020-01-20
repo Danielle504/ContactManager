@@ -313,6 +313,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		deletePicture.setAttribute(`src`, `./img/delete-icon.svg`);
 		deletePicture.setAttribute(`alt`, `Delete`);
 
+		// confirmation of delete buttons
 		const confirm = hover.appendChild(document.createElement(`div`));
 		confirm.setAttribute(`class`, `confirmation`);
 		confirm.setAttribute(`aria-hidden`, `true`);
@@ -375,6 +376,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		}
 	};
 
+	// decide whether to show label of search bar
 	const searchBlur = event => {
 		if (event.target.value !== ``) {
 			event.target.labels[0].setAttribute(`style`, `visibility: hidden;`);
@@ -384,18 +386,38 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		}
 	};
 
+	// show the label when focusing b/c it is out of the way
 	const searchFocus = event => {
 		event.target.labels[0].setAttribute(`style`, `visibility: visible;`);
 	};
 
+	// search for the value inside the search bar if the enter key is pressed
 	const searchEnter = event => {
 		if (event.key === `Enter`) {
-			return contactArr.filter(contact => {
+			const filtered =  contactArr.filter(contact => {
 				const contactName = ([contact.firstName, contact.lastName]).join(` `);
 
-				return contactName.contains(event.target.value);
+				return contactName.match(new RegExp(`.*${event.target.value}.*`, `gi`));
 			});
+
+			displayContacts(filtered);
 		}
+	};
+
+	// display the specified array of contacts
+	// clear the old displayed contacts if there are any
+	const displayContacts = contacts => {
+		const length = contactSurround.childNodes.length;
+
+		for (let i=0;i<length;i++) {
+			contactSurround.childNodes[0].remove();
+		}
+
+		contacts.forEach(contact => {
+			const contactBase = createNode();
+			setContactInfo(contact, contactBase, Object.assign({}, contact));
+			contactSurround.appendChild(contactBase);
+		});
 	};
 
 	// contArr is the array element, contHTML is the html element
@@ -471,14 +493,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	// add the contacts to the document
 	const contactSurround = document.getElementById(`contacts-surround`);
 
-	contactArr.forEach(contact => {
-		const contactBase = createNode();
-
-		// @TODO
-		// change the info
-		setContactInfo(contact, contactBase, Object.assign({}, contact));
-		contactSurround.appendChild(contactBase);
-	});
+	displayContacts(contactArr);
 
 	// elements selection
 	const contacts = document.getElementsByClassName(`contact`);
@@ -486,6 +501,9 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const editButtons = document.getElementsByClassName(`edit-btn`);
 	const addButton = document.getElementById(`add-btn`);
 	const searchInput = document.getElementsByClassName(`input-surround`)[0].children[0];
+
+	// if the bar is filled in from caching don't show label
+	searchBlur({target: searchInput});
 
 	// adding event listeners
 	addButton.onclick = addClick;
