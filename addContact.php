@@ -1,18 +1,19 @@
 <?php
-$host = 'pregradcrisis.database.windows.net';
-$user = 'PGC41@pregradcrisis';
-$pword = 'P660224chaz0015';
-$dbase = 'contactdb';
-$con = mysqli_init();
-mysqli_real_connect($con, $host, $user, $pword, $dbase, 3306);
-
-if (mysqli_connect_errno())
-{
-  $obj->code = 500;
-  $json = json_encode($obj);
-  echo $json;
-  exit();
-}
+<?php
+  $serverName = "pregradcrisis.database.windows.net";
+  $connectionOptions = array("Database" => "contactdb", 
+      "Uid" => "PGC41", 
+      "PWD" => "P660224chaz0015");
+  
+  $con = sqlsrv_connect($serverName, $connectionOptions);
+  
+  if ($con === false)
+  {
+    $obj->code = 500;
+    $json = json_encode($obj);
+    echo $json;
+    exit();
+  }
 
 $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
 do {
