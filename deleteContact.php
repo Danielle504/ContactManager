@@ -1,11 +1,11 @@
 <?php
   $serverName = "pregradcrisis.database.windows.net";
-  $connectionOptions = array("Database" => "contactdb", 
-      "Uid" => "PGC41", 
+  $connectionOptions = array("Database" => "contactdb",
+      "Uid" => "PGC41",
       "PWD" => "P660224chaz0015");
-  
+
   $con = sqlsrv_connect($serverName, $connectionOptions);
-  
+
   if ($con === false)
   {
     $obj->code = 500;
@@ -21,7 +21,7 @@ $query = "DELETE FROM contacts
           WHERE
             cid = '$obj->cid'";
 
-if (!mysqli_query($con, $query))
+if (!sqlsrv_query($con, $query))
 {
   $obj->code = 400;
   $json = json_encode($obj);
@@ -32,5 +32,5 @@ if (!mysqli_query($con, $query))
 $obj->code = 200;
 $json = json_encode($obj);
 echo $json;
-mysqli_close($con);
+sqlsrv_close($con);
 ?>
