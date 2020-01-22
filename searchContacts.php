@@ -17,8 +17,9 @@
   $json = file_get_contents('php://input');
   $obj = json_decode($json);
 
-  $query = "INSERT into 'users'(uid, pword)
-                            VALUES ('$obj->uid, $obj->pword')";
+  $query = "SELECT * FROM contacts
+                          WHERE
+                          uid = '$obj->uid'";
 
   if (!mysqli_query($con, $query))
   {
