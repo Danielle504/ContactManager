@@ -118,7 +118,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			yesButton.onclick = null;
 			noButton.onclick = null;
 
-			hoverBox.parentNode.remove();
+			contactArr.splice(parseInt(event.target.getAttribute(`id`)), 1);
+
+			// make api call to delete
+
+			displayContacts(contactArr);
 		};
 
 		const yesButton = hoverBox.children[2].children[1];
@@ -126,6 +130,18 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 		yesButton.onclick = confirm;
 		noButton.onclick = cancel;
+	};
+
+	const validate = (value, type) => {
+		switch(type) {
+			case `firstName`:
+				return value !== ``;
+			case `phone`:
+				return value === `` || value.match(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g) !== null;
+			default:
+				console.error(`Error with type`);
+				return false;
+		}
 	};
 
 	// shows contact info if not already up
@@ -141,16 +157,53 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		info = info.children[CONT_INFO];
 
 		if (editing) {
-			const items = contact.getElementsByTagName(`label`);
-
+			let invalid = false;
 			editing = false;
 
-			const created = {};
-			created.firstName = contact.getElementsByClassName(`first-name-input`).item(0).value;
-			created.lastName = contact.getElementsByClassName(`last-name-input`).item(0).value;
+			const items = contact.getElementsByTagName(`label`);
 
-			created.email = items.item(0).children[0].value;
-			created.phone = items.item(1).children[0].value.match(/\d+/g).join(``);
+			// validate first name, can't be blank
+			const fNameHTML = contact.getElementsByClassName(`first-name-input`).item(0);
+			if (!validate(fNameHTML.value, `firstName`)) {
+				fNameHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
+				editing = invalid = true;
+			}
+			else {
+				if (fNameHTML.style[`border-bottom`] === `1px solid red`) {
+					fNameHTML.style[`border-bottom`] = ``;
+				}
+			}
+
+			// last name doesn't need validation
+
+			// check email, validated by HTML
+			const emailHTML = items.item(0).children[0];
+
+			if (!emailHTML.validity.valid) {
+				editing = invalid = true;
+			}
+
+			// check phone, should be valid format
+			const phoneHTML = items.item(1).children[0];
+			if (!validate(phoneHTML.value, `phone`)) {
+				phoneHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
+				editing = invalid = true;
+			}
+			else {
+				if (phoneHTML.style[`border-bottom`] === `1px solid red`) {
+					phoneHTML.style[`border-bottom`] = ``;
+				}
+			}
+
+			if (invalid) {
+				return;
+			}
+
+			const created = {};
+			created.firstName = fNameHTML.value;
+			created.lastName = contact.getElementsByClassName(`last-name-input`).item(0).value;
+			created.email = emailHTML.value;
+			created.phone = phoneHTML.value.match(/\d+/g).join(``);
 
 			const cid = contact.getAttribute(`id`);
 
@@ -158,6 +211,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			if (cid === null) {
 				// @TODO
 				// replace this
+				// make api call add
 				created.cid = contactArr.length;
 
 				contactArr.push(created);
@@ -171,6 +225,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 					return;
 				}
 
+				// make api call edit
 				contactArr[index] = created;
 			}
 
@@ -214,6 +269,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 				switch(label) {
 					case `Email`:
 						replacer.children[0].setAttribute(`type`, `email`);
+						replacer.children[0].setAttribute(`class`, `email-input`);
 						break;
 					case `Phone`:
 						replacer.children[0].setAttribute(`type`, `tel`);
