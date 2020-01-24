@@ -1,12 +1,11 @@
 <?php
-  $serverName = "pregradcrisis.database.windows.net";
-  $connectionOptions = array("Database" => "contactdb",
-      "Uid" => "PGC41",
-      "PWD" => "P660224chaz0015");
+  $server = "azcontact.mysql.database.azure.com";
+  $user = "PGC42@azcontact",
+  $password = "P660224chaz0015";
+  $databse = "azcontact";
+  $con = mysqli_connect($server, $user, $password, $database);
 
-  $con = sqlsrv_connect($serverName, $connectionOptions);
-
-  if ($con === false)
+  if (!$con)
   {
     $obj->code = 500;
     $json = json_encode($obj);
@@ -20,7 +19,7 @@
   $query = "INSERT into 'users'(uid, pword)
                             VALUES ('$obj->uid, $obj->pword')";
 
-  if (!sqlsrv_query($con, $query))
+  if (!mysqli_query($con, $query))
   {
     $obj->code = 400;
     $json = json_encode($obj);
