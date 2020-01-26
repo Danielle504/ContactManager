@@ -166,6 +166,20 @@ address {
 	overflow-y: auto;
 }
 
+#logout-btn {
+	border: none;
+
+	text-decoration: underline;
+	font-size: 20px;
+
+	background: none;
+	color: var(--white);
+
+	position: fixed;
+	top: 0.4em;
+	right: 1em;
+}
+
 /* For floating labels */
 
 .input-surround {
