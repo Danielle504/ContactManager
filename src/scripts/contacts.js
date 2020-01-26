@@ -117,12 +117,38 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		const confirm = () => {
 			yesButton.onclick = null;
 			noButton.onclick = null;
-
-			contactArr.splice(parseInt(event.target.getAttribute(`id`)), 1);
+			const cid = event.target.parentNode.parentNode.parentNode.parentNode.getAttribute(`id`);
 
 			// make api call to delete
+			const deleteContact = new Promise((resolve, reject) => {
+				const request = new XMLHttpRequest();
 
-			displayContacts(contactArr);
+				const body = {
+					cid: cid
+				};
+
+				request.open(`POST`, `${url}/deleteContact.php`);
+				request.setRequestHeader(`Content-type`, `application/json`)
+				request.onload = () => resolve(JSON.parse(request.responseText));
+				request.onerror = () => reject(request.statusText);
+				request.send(JSON.stringify(body));
+			});
+
+			deleteContact.then(
+				data => {
+					contactArr.forEach((contact, i) => {
+						if (contact.cid === cid) {
+							contactArr.splice(i, 1);
+						}
+					});
+
+					displayContacts(contactArr);
+				}
+			).catch(
+				reason => {
+					console.error(reason);
+				}
+			);
 		};
 
 		const yesButton = hoverBox.children[2].children[1];
@@ -134,7 +160,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	const validate = (value, type) => {
 		switch(type) {
-			case `firstName`:
+			case `fname`:
 				return value !== ``;
 			case `phone`:
 				return value === `` || value.match(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g) !== null;
@@ -164,7 +190,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 			// validate first name, can't be blank
 			const fNameHTML = contact.getElementsByClassName(`first-name-input`).item(0);
-			if (!validate(fNameHTML.value, `firstName`)) {
+			if (!validate(fNameHTML.value, `fname`)) {
 				fNameHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
 				editing = invalid = true;
 			}
@@ -200,8 +226,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			}
 
 			const created = {};
-			created.firstName = fNameHTML.value;
-			created.lastName = contact.getElementsByClassName(`last-name-input`).item(0).value;
+			created.fname = fNameHTML.value;
+			created.lname = contact.getElementsByClassName(`last-name-input`).item(0).value;
 			created.email = emailHTML.value;
 			created.phone = phoneHTML.value.match(/\d+/g).join(``);
 
@@ -212,9 +238,35 @@ document.addEventListener(`DOMContentLoaded`, () => {
 				// @TODO
 				// replace this
 				// make api call add
-				created.cid = contactArr.length;
+				// created.cid = contactArr.length;
+				const addContact = new Promise((resolve, reject) => {
+					const request = new XMLHttpRequest();
+					const body = {
+						uid: HARDCODE_NAME,
+						fname: created.fname,
+						lname: created.lname,
+						phone: created.phone,
+						email: created.email
+					};
 
-				contactArr.push(created);
+					request.open(`POST`, `${url}/addContact.php`);
+					request.setRequestHeader(`Content-type`, `application/json`)
+					request.onload = () => resolve(JSON.parse(request.responseText));
+					request.onerror = () => reject(request.statusText);
+					request.send(JSON.stringify(body));
+				});
+
+				addContact.then(
+					data => {
+						created.cid = data.cid;
+						contactArr.push(created);
+						displayContacts(contactArr);
+					}
+				).catch(
+					reason => {
+						console.error(reason)
+					}
+				);
 			}
 			else {
 				created.cid = cid
@@ -226,10 +278,35 @@ document.addEventListener(`DOMContentLoaded`, () => {
 				}
 
 				// make api call edit
-				contactArr[index] = created;
-			}
+				const editContact = new Promise((resolve, reject) => {
+					const request = new XMLHttpRequest();
+					const body = {
+						uid: HARDCODE_NAME,
+						cid: created.cid,
+						fname: created.fname,
+						lname: created.lname,
+						phone: created.phone,
+						email: created.email
+					};
 
-			displayContacts(contactArr);
+					request.open(`POST`, `${url}/editContact.php`);
+					request.setRequestHeader(`Content-type`, `application/json`)
+					request.onload = () => resolve(JSON.parse(request.responseText));
+					request.onerror = () => reject(request.statusText);
+					request.send(JSON.stringify(body));
+				});
+
+				editContact.then(
+					data => {
+						contactArr[index] = created;
+						displayContacts(contactArr);
+					}
+				).catch(
+					reason => {
+						console.error(reason)
+					}
+				);
+			}
 		}
 		else {
 			// if the info box is hidden show it
@@ -289,22 +366,22 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 			// replace the name with an input
 			const name = contact.getElementsByTagName(`H3`).item(0);
-			const firstNameVal = name.children[0].innerHTML;
-			const lastNameVal = name.children[1].innerHTML;
+			const fnameVal = name.children[0].innerHTML;
+			const lnameVal = name.children[1].innerHTML;
 
-			const firstNameInput = document.createElement(`input`);
-			firstNameInput.setAttribute(`type`, `text`);
-			firstNameInput.setAttribute(`aria-label`, `First name`);
-			firstNameInput.setAttribute(`class`, `first-name-input`);
-			firstNameInput.value = firstNameVal;
+			const fnameInput = document.createElement(`input`);
+			fnameInput.setAttribute(`type`, `text`);
+			fnameInput.setAttribute(`aria-label`, `First name`);
+			fnameInput.setAttribute(`class`, `first-name-input`);
+			fnameInput.value = fnameVal;
 
-			const lastNameInput = document.createElement(`input`);
-			lastNameInput.setAttribute(`type`, `text`);
-			lastNameInput.setAttribute(`aria-label`, `Last name`);
-			lastNameInput.setAttribute(`class`, `last-name-input`);
-			lastNameInput.value = lastNameVal;
+			const lnameInput = document.createElement(`input`);
+			lnameInput.setAttribute(`type`, `text`);
+			lnameInput.setAttribute(`aria-label`, `Last name`);
+			lnameInput.setAttribute(`class`, `last-name-input`);
+			lnameInput.value = lnameVal;
 
-			name.replaceWith(firstNameInput, lastNameInput);
+			name.replaceWith(fnameInput, lnameInput);
 
 			editing = true;
 		}
@@ -331,11 +408,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		picture.setAttribute(`alt`, ``);
 
 		const name = main.appendChild(document.createElement(`h3`));
-		const firstName = name.appendChild(document.createElement(`span`));
-		firstName.innerHTML = ``;
+		const fname = name.appendChild(document.createElement(`span`));
+		fname.innerHTML = ``;
 		name.appendChild(document.createTextNode(` `));
-		const lastName = name.appendChild(document.createElement(`span`));
-		lastName.innerHTML = ``;
+		const lname = name.appendChild(document.createElement(`span`));
+		lname.innerHTML = ``;
 
 		// edit and delete buttons
 		const control = hover.appendChild(document.createElement(`div`));
@@ -440,7 +517,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const searchEnter = event => {
 		if (event.key === `Enter`) {
 			const filtered =  contactArr.filter(contact => {
-				const contactName = ([contact.firstName, contact.lastName]).join(` `);
+				const contactName = ([contact.fname, contact.lname]).join(` `);
 
 				return contactName.match(new RegExp(`.*${event.target.value}.*`, `gi`));
 			});
@@ -470,8 +547,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	// contArr is the array element, contHTML is the html element
 	// info is an object containing all the contact info
 	const setContactInfo = (contArr, contHTML, info) => {
-		contArr.firstName = info.firstName;
-		contArr.lastName = info.lastName;
+		contArr.fname = info.fname;
+		contArr.lname = info.lname;
 		contArr.email = info.email;
 		contArr.phone = info.phone;
 		contArr.cid = info.cid;
@@ -482,8 +559,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		contHTML.setAttribute(`id`, info.cid)
 		const hover = contHTML.children[0];
 		const name = hover.children[0].children[1];
-		name.children[0].innerHTML = info.firstName;
-		name.children[1].innerHTML = info.lastName;
+		name.children[0].innerHTML = info.fname;
+		name.children[1].innerHTML = info.lname;
 		const contInfo = contHTML.children[1].children[0];
 		contInfo.children[0].innerHTML = `Email: ${info.email}`;
 		contInfo.children[1].innerHTML = `Phone: ${phoneFormatted}`;
@@ -491,10 +568,10 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	const sortContacts = contacts => {
 		contacts.sort((a, b) => {
-			const compareFirst = a.firstName.localeCompare(b.firstName);
+			const compareFirst = a.fname.localeCompare(b.fname);
 
 			if (compareFirst === 0) {
-				return a.lastName.localeCompare(b.lastName);
+				return a.lname.localeCompare(b.lname);
 			}
 
 			return compareFirst;
@@ -503,57 +580,80 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	// get the contacts from the DB
 	// this is just example for now
-	const contactArr = [
-		{
-			cid: `0`,
-			firstName: `John`,
-			lastName: `Smith`,
-			email: `john@gmail.com`,
-			phone: `5555555555`
-		},
-		{
-			cid: `1`,
-			firstName: `Davis`,
-			lastName: `Goff`,
-			email: `davis@gmail.com`,
-			phone: `1234567890`
-		},
-		{
-			cid: `2`,
-			firstName: `Gaby`,
-			lastName: `Whoknows`,
-			email: `gaby@gmail.com`,
-			phone: `0987654321`
-		},
-		{
-			cid: `3`,
-			firstName: `Mary`,
-			lastName: `Jesus`,
-			email: `mary@gmail.com`,
-			phone: `7894561230`
-		},
-		{
-			cid: `4`,
-			firstName: `Joey`,
-			lastName: `Curitn`,
-			email: `joey@gmail.com`,
-			phone: `4567891230`
-		},
-		{
-			cid: `5`,
-			firstName: `Alpha`,
-			lastName: `Beta`,
-			email: `alpha@gmail.com`,
-			phone: `1237894560`
-		}
-	];
+	const HARDCODE_NAME = `ben@lol.com`;
+	const url = `https://pregradcrisis.azurewebsites.net`;
 
-	(document.getElementById(`loading`)).remove();
+	// const contactArr = [
+	// 	{
+	// 		cid: `0`,
+	// 		fname: `John`,
+	// 		lname: `Smith`,
+	// 		email: `john@gmail.com`,
+	// 		phone: `5555555555`
+	// 	},
+	// 	{
+	// 		cid: `1`,
+	// 		fname: `Davis`,
+	// 		lname: `Goff`,
+	// 		email: `davis@gmail.com`,
+	// 		phone: `1234567890`
+	// 	},
+	// 	{
+	// 		cid: `2`,
+	// 		fname: `Gaby`,
+	// 		lname: `Whoknows`,
+	// 		email: `gaby@gmail.com`,
+	// 		phone: `0987654321`
+	// 	},
+	// 	{
+	// 		cid: `3`,
+	// 		fname: `Mary`,
+	// 		lname: `Jesus`,
+	// 		email: `mary@gmail.com`,
+	// 		phone: `7894561230`
+	// 	},
+	// 	{
+	// 		cid: `4`,
+	// 		fname: `Joey`,
+	// 		lname: `Curitn`,
+	// 		email: `joey@gmail.com`,
+	// 		phone: `4567891230`
+	// 	},
+	// 	{
+	// 		cid: `5`,
+	// 		fname: `Alpha`,
+	// 		lname: `Beta`,
+	// 		email: `alpha@gmail.com`,
+	// 		phone: `1237894560`
+	// 	}
+	// ];
+
+	let contactArr = [];
+
+	const requestContacts = new Promise((resolve, reject) => {
+		const request = new XMLHttpRequest();
+
+		request.open(`POST`, `${url}/searchContacts.php`);
+		request.setRequestHeader(`Content-type`, `application/json`)
+		request.onload = () => resolve(JSON.parse(request.responseText));
+		request.onerror = () => reject(request.statusText);
+		request.send(JSON.stringify({uid: HARDCODE_NAME}));
+	});
+
+	requestContacts.then(
+		data => {
+			contactArr = [... data.contacts];
+			(document.getElementById(`loading`)).remove();
+			displayContacts(contactArr);
+		}
+	).catch(
+		reason => {
+			console.error(reason);
+		}
+	);
 
 	// add the contacts to the document
 	const contactSurround = document.getElementById(`contacts-surround`);
-
-	displayContacts(contactArr);
 
 	// elements selection
 	const contacts = document.getElementsByClassName(`contact`);
