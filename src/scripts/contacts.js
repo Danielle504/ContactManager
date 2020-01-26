@@ -578,55 +578,15 @@ document.addEventListener(`DOMContentLoaded`, () => {
 		});
 	};
 
+	const handleLogout = event => {
+		event.preventDefault();
+		console.log(`handle log out`);
+	};
+
 	// get the contacts from the DB
 	// this is just example for now
 	const HARDCODE_NAME = `ben@lol.com`;
 	const url = `https://pregradcrisis.azurewebsites.net`;
-
-	// const contactArr = [
-	// 	{
-	// 		cid: `0`,
-	// 		fname: `John`,
-	// 		lname: `Smith`,
-	// 		email: `john@gmail.com`,
-	// 		phone: `5555555555`
-	// 	},
-	// 	{
-	// 		cid: `1`,
-	// 		fname: `Davis`,
-	// 		lname: `Goff`,
-	// 		email: `davis@gmail.com`,
-	// 		phone: `1234567890`
-	// 	},
-	// 	{
-	// 		cid: `2`,
-	// 		fname: `Gaby`,
-	// 		lname: `Whoknows`,
-	// 		email: `gaby@gmail.com`,
-	// 		phone: `0987654321`
-	// 	},
-	// 	{
-	// 		cid: `3`,
-	// 		fname: `Mary`,
-	// 		lname: `Jesus`,
-	// 		email: `mary@gmail.com`,
-	// 		phone: `7894561230`
-	// 	},
-	// 	{
-	// 		cid: `4`,
-	// 		fname: `Joey`,
-	// 		lname: `Curitn`,
-	// 		email: `joey@gmail.com`,
-	// 		phone: `4567891230`
-	// 	},
-	// 	{
-	// 		cid: `5`,
-	// 		fname: `Alpha`,
-	// 		lname: `Beta`,
-	// 		email: `alpha@gmail.com`,
-	// 		phone: `1237894560`
-	// 	}
-	// ];
 
 	let contactArr = [];
 
@@ -661,6 +621,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const editButtons = document.getElementsByClassName(`edit-btn`);
 	const addButton = document.getElementById(`add-btn`);
 	const searchInput = document.getElementsByClassName(`input-surround`)[0].children[0];
+	const logout = document.getElementById(`logout-btn`);
 
 	// if the bar is filled in from caching don't show label
 	searchBlur({target: searchInput});
@@ -673,6 +634,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	searchInput.onblur = searchBlur;
 	searchInput.onfocus = searchFocus;
 	searchInput.onkeydown = searchEnter;
+
+	logout.onclick = handleLogout;
 
 	for (let i=0;i<contacts.length;i++) {
 		contacts.item(i).onmouseenter = showContactCtrl;
