@@ -1,5 +1,41 @@
 const url = `https://pregradcrisis.azurewebsites.net`;
 
+if (document.cookie !== ``) {
+	const cookie = decodeURIComponent(document.cookie);
+	const type = cookie.slice(0, 6);
+
+	if (type === `info=`) {
+		const [username, password] = cookie.slice(6).split(`password:`);
+
+		const login = new Promise((resolve, reject) => {
+			const request = new XMLHttpRequest();
+			const body = {
+				uid: username,
+				pword: md5(password)
+			};
+
+			request.open(`POST`, `${url}/login.php`);
+			request.setRequestHeader(`Content-type`, `application/json`)
+			request.onload = () => resolve(JSON.parse(request.responseText));
+			request.onerror = () => reject(request.statusText);
+			request.send(JSON.stringify(body));
+		});
+
+		login.then(
+			data => {
+				const index = window.location.href.lastIndexOf(`/index.html`);
+
+				console.log(data);
+				window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
+			}
+		).catch(
+			reason => {
+				console.error(reason);
+			}
+		);
+	}
+}
+
 const md5 = string => {
 	const rotateLeft = (lValue, iShiftBits) => {
 		return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
@@ -250,20 +286,22 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const handleSend = event => {
 		event.preventDefault();
 
-		if (usernameInput.value === `username` || usernameInput.value === `password`) {
+		if (usernameInput.value === `password` || passwordInput.value === `password`) {
 			console.error(`garbage`);
 		}
 
 		if (usernameInput.validity.valid && passwordInput.validity.valid) {
 			const username = usernameInput.value;
-			const password = md5(passwordInput.value);
+			const password = passwordInput.value;
+
+			const cookie = encodeURIComponent(`${username}password:${password}`);
 
 			if (register) {
 				const register = new Promise((resolve, reject) => {
 					const request = new XMLHttpRequest();
 					const body = {
 						uid: username,
-						pword: password
+						pword: md5(password)
 					};
 
 					request.open(`POST`, `${url}/adduser.php`);
@@ -275,7 +313,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 				register.then(
 					data => {
-						console.log(data);
+						document.cookie = `info=${cookie};samesite=strict`;
 					}
 				).catch(
 					reason => {
@@ -288,7 +326,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 					const request = new XMLHttpRequest();
 					const body = {
 						uid: username,
-						pword: password
+						pword: md5(password)
 					};
 
 					request.open(`POST`, `${url}/login.php`);
@@ -300,15 +338,17 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 				login.then(
 					data => {
-						console.log(data);
-						document.cookie = encodeURIComponent(`info=${atob(`username:${username}password:${password}`)};secure;samesite`);
+						document.cookie = `info=${cookie};samesite=strict`;
+
+						const index = window.location.href.lastIndexOf(`/index.html`);
+
+						window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
 					}
 				).catch(
 					reason => {
 						console.error(reason);
 					}
 				);
-
 			}
 		}
 	};
