@@ -2,10 +2,10 @@ const url = `https://pregradcrisis.azurewebsites.net`;
 
 if (document.cookie !== ``) {
 	const cookie = decodeURIComponent(document.cookie);
-	const type = cookie.slice(0, 6);
+	const type = cookie.slice(0, 5);
 
 	if (type === `info=`) {
-		const [username, password] = cookie.slice(6).split(`password:`);
+		const [username, password] = cookie.slice(5).split(`password:`);
 
 		const login = new Promise((resolve, reject) => {
 			const request = new XMLHttpRequest();
@@ -25,7 +25,6 @@ if (document.cookie !== ``) {
 			data => {
 				const index = window.location.href.lastIndexOf(`/index.html`);
 
-				console.log(data);
 				window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
 			}
 		).catch(
