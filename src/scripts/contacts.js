@@ -234,19 +234,31 @@ const md5 = string => {
 	return temp.toLowerCase();
 };
 
+const redirect = () => {
+	const index = window.location.href.lastIndexOf(`/contacts.html`);
+
+	window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
+};
 
 if (document.cookie !== ``) {
-	const cookie = decodeURIComponent(document.cookie);
-	const type = cookie.slice(0, 5);
+	if (document.cookie.includes(`username=`) && document.cookie.includes(`password=`)) {
+		const breakPoint = document.cookie.indexOf(`; `);
 
-	if (type !== `info=`) {
-		const index = window.location.href.lastIndexOf(`/contacts.html`);
-		window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
-	}
-	else {
-		const [username, password] = cookie.slice(5).split(`password:`);
+		let username = document.cookie.indexOf(`username=`);
+		let password = document.cookie.indexOf(`password=`);
+
+		if (username > breakPoint) {
+			username = document.cookie.slice(username + 9);
+			password = document.cookie.slice(9, breakPoint);
+		}
+		else {
+			username = document.cookie.slice(9, breakPoint);
+			password = document.cookie.slice(password + 9);
+		}
 
 		const login = new Promise((resolve, reject) => {
+			console.log(username);
+			console.log(password);
 			const request = new XMLHttpRequest();
 			const body = {
 				uid: username,
@@ -266,16 +278,16 @@ if (document.cookie !== ``) {
 			}
 		).catch(
 			reason => {
-				const index = window.location.href.lastIndexOf(`/contacts.html`);
-
-				window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
+				redirect();
 			}
 		);
 	}
+	else {
+		redirect();
+	}
 }
 else {
-	const index = window.location.href.lastIndexOf(`/contacts.html`);
-	window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
+	redirect();
 }
 
 const mainLogic = username => {
@@ -856,9 +868,10 @@ const mainLogic = username => {
 
 	const handleLogout = event => {
 		event.preventDefault();
-		document.cookie = `info=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
-		const index = window.location.href.lastIndexOf(`/contacts.html`);
-		window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
+		document.cookie = `username=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+		document.cookie = `password=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+
+		redirect();
 	};
 
 	document.getElementById(`uname`).innerHTML = `${username} `;

@@ -231,6 +231,12 @@ const md5 = string => {
 	return temp.toLowerCase();
 };
 
+const redirect = () => {
+	const index = window.location.href.lastIndexOf(`/index.html`);
+
+	window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
+};
+
 const login = (username, password, success, failure) => {
 	const promise = new Promise((resolve, reject) => {
 		const request = new XMLHttpRequest();
@@ -266,21 +272,19 @@ if (document.cookie !== ``) {
 
 		if (username > breakPoint) {
 			username = document.cookie.slice(username + 9);
-			password = document.cookie.slice(0, breakPoint);
+			password = document.cookie.slice(9, breakPoint);
 		}
 		else {
-			username = document.cookie.slice(0, breakPoint);
+			username = document.cookie.slice(9, breakPoint);
 			password = document.cookie.slice(password + 9);
 		}
 
 		login(username, password,
 			data => {
-				const index = window.location.href.lastIndexOf(`/index.html`);
-
-				window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
+				redirect();
 			},
 			reason => {
-				console.error(reason);
+				return;
 			}
 		);
 	}
@@ -288,6 +292,17 @@ if (document.cookie !== ``) {
 
 document.addEventListener(`DOMContentLoaded`, () => {
 	let register = false;
+
+	const succeeded = message => {
+		successNotifier.setAttribute(`aria-hidden`, `false`);
+		successNotifier.innerHTML = message;
+
+	};
+
+	const error = message => {
+		errorNotifier.setAttribute(`aria-hidden`, `false`);
+		errorNotifier.innerHTML = message;
+	};
 
 	const inputBlur = event => {
 		if (event.target.value !== ``) {
@@ -304,6 +319,9 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	const handleSend = event => {
 		event.preventDefault();
+
+		errorNotifier.setAttribute(`aria-hidden`, `true`);
+		successNotifier.setAttribute(`aria-hidden`, `true`);
 
 		if (usernameInput.validity.valid && passwordInput.validity.valid) {
 			const username = usernameInput.value;
@@ -326,29 +344,45 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 				register.then(
 					data => {
-						document.cookie = `username=${encodeURIComponent(username)};samesite=strict`;
-						document.cookie = `password=${encodeURIComponent(password)};samesite=strict`;
-						console.log(document.cookie);
+						console.log(data.code);
+						switch(data.code) {
+							case 200:
+								succeeded(`Successfully registered. Please log in.`);
+								break;
+							case 400:
+								error(`That user already exists.`);
+								break;
+							case 500:
+							default:
+								error(`Something went wrong. Please try again or come back later`);
+						}
 					}
 				).catch(
 					reason => {
-						console.error(reason);
+						error(`Something went wrong. Please try again or come back later`);
 					}
 				);
 			}
 			else {
 				login(username, password,
 					data => {
-						document.cookie = `username=${encodeURIComponent(username)};samesite=strict`;
-						document.cookie = `password=${encodeURIComponent(password)};samesite=strict`;
-						console.log(document.cookie);
-
-						const index = window.location.href.lastIndexOf(`/index.html`);
-
-						window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
+						switch(data.code) {
+							case 200:
+								succeeded(`Logging you in now...`);
+								document.cookie = `username=${encodeURIComponent(username)};samesite=strict`;
+								document.cookie = `password=${encodeURIComponent(password)};samesite=strict`;
+								redirect();
+								break;
+							case 400:
+								error(`Username or password incorrect.`);
+								break;
+							case 500:
+							default:
+								error(`Something went wrong. Please try again or come back later`);
+						}
 					},
 					reason => {
-						console.error(reason);
+						error(`Something went wrong. Please try again or come back later`);
 					}
 				);
 			}
@@ -384,6 +418,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const passwordInput = document.getElementById(`password`);
 	const sendBtn = document.getElementById(`send-btn`);
 	const toggleBtn = document.getElementById(`toggle-type-btn`);
+	const errorNotifier = document.getElementById(`error-notifier`);
+	const successNotifier = document.getElementById(`success-notifier`);
 
 	if (usernameInput.value !== ``) {
 		usernameInput.labels[0].setAttribute(`style`, `visibility: hidden;`)
