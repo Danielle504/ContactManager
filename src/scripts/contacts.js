@@ -272,6 +272,9 @@ if (document.cookie !== ``) {
 			password = document.cookie.slice(password + 9);
 		}
 
+		username = decodeURIComponent(username);
+		password = decodeURIComponent(password);
+
 		const login = new Promise((resolve, reject) => {
 			const request = new XMLHttpRequest();
 			const body = {
