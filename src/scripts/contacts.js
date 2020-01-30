@@ -307,6 +307,15 @@ else {
 const mainLogic = username => {
 	let editing = false;
 
+	const error = message => {
+		errorDisplay.setAttribute(`aria-hidden`, `false`);
+		errorDisplay.innerHTML = message;
+	};
+
+	const hideError = () => {
+		errorDisplay.setAttribute(`aria-hidden`, `true`);
+	};
+
 	// show the edit and delete buttons
 	const showContactCtrl = event => {
 		const controls = event.target.children[MAIN].children[CTRL];
@@ -385,6 +394,8 @@ const mainLogic = username => {
 			return;
 		}
 
+		hideError();
+
 		// show the important stuff
 		if (info.getAttribute(`aria-hidden`) === `true`) {
 			info.setAttribute(`aria-hidden`, `false`);
@@ -397,6 +408,8 @@ const mainLogic = username => {
 
 	// deletes the main contact when the delete icon is pressed
 	const deleteClick = event => {
+		hideError();
+
 		let controls = event.target.parentNode;
 
 		if (event.target.tagName === `IMG`) {
@@ -417,7 +430,6 @@ const mainLogic = username => {
 		};
 
 		const confirm = () => {
-			console.log(`hit`);
 			yesButton.onclick = null;
 			noButton.onclick = null;
 			const cid = event.target.parentNode.parentNode.parentNode.parentNode.getAttribute(`id`);
@@ -439,23 +451,27 @@ const mainLogic = username => {
 
 			deleteContact.then(
 				data => {
-					contactArr.forEach((contact, i) => {
-						if (contact.cid === cid) {
-							contactArr.splice(i, 1);
-						}
-					});
+					if (data.code === 200) {
+						contactArr.forEach((contact, i) => {
+							if (contact.cid === cid) {
+								contactArr.splice(i, 1);
+							}
+						});
 
-					displayContacts(contactArr);
+						displayContacts(contactArr);
+					}
+					else {
+						error(`Could not delete contact. Please try again or come back later.`);
+					}
 				}
 			).catch(
 				reason => {
-					console.error(reason);
+					error(`Could not delete contact. Please try again or come back later.`);
 				}
 			);
 		};
 
 		const yesButton = hoverBox.children[CONFIRMATION].children[CONFIRM];
-		console.log(yesButton);
 		const noButton = hoverBox.children[CONFIRMATION].children[DENY];
 
 		yesButton.onclick = confirm;
@@ -476,7 +492,15 @@ const mainLogic = username => {
 	// shows contact info if not already up
 	// switches to editing the info
 	const editClick = (event, newContact=false) => {
+		hideError();
+
 		let info = event.target.parentNode.parentNode.parentNode;
+
+		const placeholder = document.getElementById(`placeholder`);
+
+		if (placeholder != undefined) {
+			placeholder.remove();
+		}
 
 		if (!info.classList.contains(`contact`)) {
 			info = info.parentNode;
@@ -557,13 +581,18 @@ const mainLogic = username => {
 
 				addContact.then(
 					data => {
-						created.cid = data.cid;
-						contactArr.push(created);
-						displayContacts(contactArr);
+						if (data.code === 200) {
+							created.cid = data.cid;
+							contactArr.push(created);
+							displayContacts(contactArr);
+						}
+						else {
+							error(`Could not add contact. Please try again or wait until later.`);
+						}
 					}
 				).catch(
 					reason => {
-						console.error(reason)
+						error(`Could not add contact. Please try again or wait until later.`);
 					}
 				);
 			}
@@ -572,7 +601,7 @@ const mainLogic = username => {
 				const index = contactArr.findIndex(element => element.cid === contact.getAttribute(`id`));
 
 				if (index === -1) {
-					console.error(`uh oh`);
+					error(`Could not edit contact. Please try again or wait until later.`);
 					return;
 				}
 
@@ -597,12 +626,17 @@ const mainLogic = username => {
 
 				editContact.then(
 					data => {
-						contactArr[index] = created;
-						displayContacts(contactArr);
+						if (data.code === 200) {
+							contactArr[index] = created;
+							displayContacts(contactArr);
+						}
+						else {
+							error(`Could not edit contact. Please try again or wait until later.`);
+						}
 					}
 				).catch(
 					reason => {
-						console.error(reason)
+						error(`Could not edit contact. Please try again or wait until later.`);
 					}
 				);
 			}
@@ -654,7 +688,6 @@ const mainLogic = username => {
 						replacer.children[0].setAttribute(`type`, `text`);
 						break;
 					default:
-						console.error(`oops`);
 				}
 
 				replacer.parentNode.parentNode.append(replacer.cloneNode(true));
@@ -770,6 +803,8 @@ const mainLogic = username => {
 	const addClick = event => {
 		event.preventDefault();
 
+		hideError();
+
 		const newContact = contactSurround.appendChild(createNode());
 
 		// targets the edit button of the created node
@@ -810,6 +845,8 @@ const mainLogic = username => {
 	// search for the value inside the search bar if the enter key is pressed
 	const searchEnter = event => {
 		if (event.key === `Enter`) {
+			hideError();
+
 			const filtered =  contactArr.filter(contact => {
 				const contactName = ([contact.fname, contact.lname]).join(` `);
 
@@ -829,13 +866,22 @@ const mainLogic = username => {
 			contactSurround.childNodes[0].remove();
 		}
 
-		sortContacts(contacts);
+		if (contactArr.length < 1) {
+			const helper = document.createElement(`p`);
+			helper.innerHTML = `Add contacts by clicking the button above.`;
+			helper.setAttribute(`id`, `placeholder`);
 
-		contacts.forEach(contact => {
-			const contactBase = createNode();
-			setContactInfo(contact, contactBase, Object.assign({}, contact));
-			contactSurround.appendChild(contactBase);
-		});
+			contactSurround.append(helper);
+		}
+		else {
+			sortContacts(contacts);
+
+			contacts.forEach(contact => {
+				const contactBase = createNode();
+				setContactInfo(contact, contactBase, Object.assign({}, contact));
+				contactSurround.appendChild(contactBase);
+			});
+		}
 	};
 
 	// contArr is the array element, contHTML is the html element
@@ -877,6 +923,9 @@ const mainLogic = username => {
 
 	const handleLogout = event => {
 		event.preventDefault();
+
+		hideError();
+
 		document.cookie = `username=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
 		document.cookie = `password=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
 
@@ -899,13 +948,15 @@ const mainLogic = username => {
 
 	requestContacts.then(
 		data => {
+			if (data.code !== 200) {
+				error(`Could not retrieve contacts. Reload the page to try again or wait until later.`);
+			}
 			contactArr = [... data.contacts];
-			(document.getElementById(`loading`)).remove();
 			displayContacts(contactArr);
 		}
 	).catch(
 		reason => {
-			console.error(reason);
+			error(`Could not retrieve contacts. Reload the page to try again or wait until later.`);
 		}
 	);
 
@@ -919,6 +970,7 @@ const mainLogic = username => {
 	const addButton = document.getElementById(`add-btn`);
 	const searchInput = document.getElementsByClassName(`input-surround`)[0].children[0];
 	const logout = document.getElementById(`logout-btn`);
+	const errorDisplay = document.getElementById(`error`);
 
 	// if the bar is filled in from caching don't show label
 	searchBlur({target: searchInput});

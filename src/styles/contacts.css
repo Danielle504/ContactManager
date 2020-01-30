@@ -191,6 +191,11 @@ address {
 	overflow-y: auto;
 }
 
+#placeholder {
+	margin-top: 0.5em;
+	font-size: 18px;
+}
+
 /* For floating labels */
 
 .input-surround {
