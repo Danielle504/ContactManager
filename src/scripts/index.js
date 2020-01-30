@@ -296,7 +296,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 	const succeeded = message => {
 		successNotifier.setAttribute(`aria-hidden`, `false`);
 		successNotifier.innerHTML = message;
-
 	};
 
 	const error = message => {
@@ -328,6 +327,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
 			const password = passwordInput.value;
 
 			if (register) {
+				succeeded(`Registering...`);
+
 				const register = new Promise((resolve, reject) => {
 					const request = new XMLHttpRequest();
 					const body = {
@@ -347,6 +348,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 						console.log(data.code);
 						switch(data.code) {
 							case 200:
+								toggleType();
 								succeeded(`Successfully registered. Please log in.`);
 								break;
 							case 400:
