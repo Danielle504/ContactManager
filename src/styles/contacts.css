@@ -288,7 +288,7 @@ address {
 }
 
 .first-name-input, .last-name-input {
-	width: 40%;
+	width: 46%;
 	max-width: 300px;
 }
 
@@ -303,18 +303,6 @@ address {
 	align-items: center;
 	justify-content: flex-start;
 	width: 77%;
-}
-
-.profile-picture {
-	width: 40px
-	min-width: 40px;
-	max-width: 40px;
-	height: auto;
-	border: none;
-	border-radius: 2px;
-	margin-right: 15px;
-	flex-grow: 0;
-	flex-shrink: 0;
 }
 
 .contact-info {

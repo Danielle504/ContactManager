@@ -1,7 +1,23 @@
-const CONT_HOVER = 0;
-const CONT_INFO = 1;
-const CONT_CTRL = 1;
 const url = `https://pregradcrisis.azurewebsites.net`;
+
+// indices for when targeting these nodes as children of a parent
+const HOVER_BOX = 0;
+
+const MAIN = 0;
+const NAME = 0;
+
+const CTRL = 1;
+const EDIT = 0;
+const DELETE = 1;
+
+const CONFIRMATION = 2;
+const CONFIRM = 1;
+const DENY = 2;
+
+const INFO = 1;
+const ADDRESS = 0;
+const EMAIL= 0;
+const PHONE = 1;
 
 const md5 = string => {
 	const rotateLeft = (lValue, iShiftBits) => {
@@ -257,8 +273,6 @@ if (document.cookie !== ``) {
 		}
 
 		const login = new Promise((resolve, reject) => {
-			console.log(username);
-			console.log(password);
 			const request = new XMLHttpRequest();
 			const body = {
 				uid: username,
@@ -295,13 +309,13 @@ const mainLogic = username => {
 
 	// show the edit and delete buttons
 	const showContactCtrl = event => {
-		const controls = event.target.children[CONT_HOVER].children[CONT_CTRL];
+		const controls = event.target.children[MAIN].children[CTRL];
 
 		if (controls == undefined || !controls.classList.contains(`contact-ctrl`)) {
 			return;
 		}
 
-		if (controls.parentNode.children[2].getAttribute(`aria-hidden`) === `false`) {
+		if (controls.parentNode.children[CONFIRMATION].getAttribute(`aria-hidden`) === `false`) {
 			return;
 		}
 
@@ -310,11 +324,11 @@ const mainLogic = username => {
 
 	// hide the edit and delete buttons
 	const hideContactCtrl = event => {
-		if (event.target.children[CONT_HOVER].children[0].children[1].nodeName !== `H3`) {
+		if (event.target.children[HOVER_BOX].children[MAIN].children[NAME].nodeName !== `H3`) {
 			return;
 		}
 
-		const controls = event.target.children[CONT_HOVER].children[CONT_CTRL];
+		const controls = event.target.children[HOVER_BOX].children[CTRL];
 
 		if (controls == undefined || !controls.classList.contains(`contact-ctrl`)) {
 			return;
@@ -338,7 +352,7 @@ const mainLogic = username => {
 		}
 
 		// change target when clicking on the name and image
-		if (target.nodeName === `H3` || target.nodeName === `IMG`) {
+		if (target.nodeName === `H3` || target.nodeName == `img`) {
 			contactClick({
 				target: target.parentNode.parentNode.parentNode
 			});
@@ -357,15 +371,15 @@ const mainLogic = username => {
 			});
 		}
 
-		const hover = target.children[CONT_HOVER];
+		const hover = target.children[HOVER_BOX];
 
 		// if hover or info don't exist (i.e. detected wrong click) then do nothing
-		if (hover == undefined || hover.children[CONT_CTRL] == undefined || !hover.children[CONT_CTRL].classList.contains(`contact-ctrl`)) {
+		if (hover == undefined || hover.children[CTRL] == undefined || !hover.children[1].classList.contains(`contact-ctrl`)) {
 			return;
 		}
 
-		const controls = hover.children[CONT_CTRL];
-		const info = target.children[CONT_INFO];
+		const controls = hover.children[CTRL];
+		const info = target.children[INFO];
 
 		if (info == undefined || !info.classList.contains(`contact-info`)) {
 			return;
@@ -392,17 +406,18 @@ const mainLogic = username => {
 		const hoverBox = controls.parentNode;
 
 		controls.setAttribute(`aria-hidden`, `true`);
-		hoverBox.children[2].setAttribute(`aria-hidden`, `false`);
+		hoverBox.children[CONFIRMATION].setAttribute(`aria-hidden`, `false`);
 
 		const cancel = () => {
 			controls.setAttribute(`aria-hidden`, `false`);
-			hoverBox.children[2].setAttribute(`aria-hidden`, `true`);
+			hoverBox.children[CONFIRMATION].setAttribute(`aria-hidden`, `true`);
 
 			yesButton.onclick = null;
 			noButton.onclick = null;
 		};
 
 		const confirm = () => {
+			console.log(`hit`);
 			yesButton.onclick = null;
 			noButton.onclick = null;
 			const cid = event.target.parentNode.parentNode.parentNode.parentNode.getAttribute(`id`);
@@ -439,8 +454,9 @@ const mainLogic = username => {
 			);
 		};
 
-		const yesButton = hoverBox.children[2].children[1];
-		const noButton = hoverBox.children[2].children[2];
+		const yesButton = hoverBox.children[CONFIRMATION].children[CONFIRM];
+		console.log(yesButton);
+		const noButton = hoverBox.children[CONFIRMATION].children[DENY];
 
 		yesButton.onclick = confirm;
 		noButton.onclick = cancel;
@@ -453,7 +469,6 @@ const mainLogic = username => {
 			case `phone`:
 				return value === `` || value.match(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g) !== null;
 			default:
-				console.error(`Error with type`);
 				return false;
 		}
 	};
@@ -468,7 +483,7 @@ const mainLogic = username => {
 		}
 
 		const contact = info;
-		info = info.children[CONT_INFO];
+		info = info.children[INFO];
 
 		if (editing) {
 			let invalid = false;
@@ -491,14 +506,14 @@ const mainLogic = username => {
 			// last name doesn't need validation
 
 			// check email, validated by HTML
-			const emailHTML = items.item(0).children[0];
+			const emailHTML = items.item(EMAIL).children[0];
 
 			if (!emailHTML.validity.valid) {
 				editing = invalid = true;
 			}
 
 			// check phone, should be valid format
-			const phoneHTML = items.item(1).children[0];
+			const phoneHTML = items.item(PHONE).children[0];
 			if (!validate(phoneHTML.value, `phone`)) {
 				phoneHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
 				editing = invalid = true;
@@ -523,10 +538,6 @@ const mainLogic = username => {
 
 			// make api call with cid
 			if (cid === null) {
-				// @TODO
-				// replace this
-				// make api call add
-				// created.cid = contactArr.length;
 				const addContact = new Promise((resolve, reject) => {
 					const request = new XMLHttpRequest();
 					const body = {
@@ -690,11 +701,6 @@ const mainLogic = username => {
 		const main = hover.appendChild(document.createElement(`div`));
 		main.setAttribute(`class`, `contact-main`);
 
-		const picture = main.appendChild(document.createElement(`img`));
-		picture.setAttribute(`class`, `profile-picture`);
-		picture.setAttribute(`src`, `./img/square-placeholder.jpg`);
-		picture.setAttribute(`alt`, ``);
-
 		const name = main.appendChild(document.createElement(`h3`));
 		const fname = name.appendChild(document.createElement(`span`));
 		fname.innerHTML = ``;
@@ -766,9 +772,9 @@ const mainLogic = username => {
 
 		const newContact = contactSurround.appendChild(createNode());
 
-		// this is ugly but targets the edit button of the created node
+		// targets the edit button of the created node
 		editClick({
-			target: newContact.children[CONT_HOVER].children[CONT_CTRL].children[0]
+			target: newContact.children[HOVER_BOX].children[CTRL].children[EDIT]
 		}, true);
 	};
 
@@ -844,14 +850,17 @@ const mainLogic = username => {
 		const phoneFormatted = `(${info.phone.substring(0, 3)}) ${info.phone.substring(3, 6)}-${info.phone.substring(6)}`;
 
 		// set html
-		contHTML.setAttribute(`id`, info.cid)
-		const hover = contHTML.children[0];
-		const name = hover.children[0].children[1];
+		contHTML.setAttribute(`id`, info.cid);
+
+		const hover = contHTML.children[HOVER_BOX];
+
+		const name = hover.children[MAIN].children[NAME];
 		name.children[0].innerHTML = info.fname;
 		name.children[1].innerHTML = info.lname;
-		const contInfo = contHTML.children[1].children[0];
-		contInfo.children[0].innerHTML = `Email: ${info.email}`;
-		contInfo.children[1].innerHTML = `Phone: ${phoneFormatted}`;
+
+		const contInfo = contHTML.children[INFO].children[ADDRESS];
+		contInfo.children[EMAIL].innerHTML = `Email: ${info.email}`;
+		contInfo.children[PHONE].innerHTML = `Phone: ${phoneFormatted}`;
 	};
 
 	const sortContacts = contacts => {
