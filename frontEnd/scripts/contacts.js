@@ -486,7 +486,10 @@ const mainLogic = username => {
 			case `fname`:
 				return value !== ``;
 			case `phone`:
-				return value === `` || value.match(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g) !== null;
+				const numberCount = value.match(/\d/g).join(``).length;
+				return value === `` || (numberCount >= 10 && numberCount <= 15);
+			case `email`:
+				return value === `` || value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i) !== null;
 			default:
 				return false;
 		}
@@ -532,11 +535,16 @@ const mainLogic = username => {
 
 			// last name doesn't need validation
 
-			// check email, validated by HTML
+			// check email, should be valid format
 			const emailHTML = items.item(EMAIL).children[0];
-
-			if (!emailHTML.validity.valid) {
+			if (!validate(emailHTML.value, `email`)) {
+				emailHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
 				editing = invalid = true;
+			}
+			else {
+				if (emailHTML.style[`border-bottom`] === `1px solid red`) {
+					emailHTML.style[`border-bottom`] = ``;
+				}
 			}
 
 			// check phone, should be valid format
@@ -681,7 +689,7 @@ const mainLogic = username => {
 
 				switch(label) {
 					case `Email`:
-						replacer.children[0].setAttribute(`type`, `email`);
+						replacer.children[0].setAttribute(`type`, `text`);
 						replacer.children[0].setAttribute(`class`, `email-input`);
 						break;
 					case `Phone`:
@@ -896,7 +904,13 @@ const mainLogic = username => {
 		contArr.phone = info.phone;
 		contArr.cid = info.cid;
 
-		const phoneFormatted = `(${info.phone.substring(0, 3)}) ${info.phone.substring(3, 6)}-${info.phone.substring(6)}`;
+		const phone = info.phone;
+		const length = phone.length;
+
+		// takes substrings from the back to front
+		// back 9 are main number anything remaining in front is taken
+		// as country code
+		const phoneFormatted = `${length > 10 ? `+${phone.substring(0, length - 10)} `:``}(${phone.substring(length - 10, length - 7)}) ${phone.substring(length - 7, length - 4)}-${phone.substring(length - 4)}`
 
 		// set html
 		contHTML.setAttribute(`id`, info.cid);
