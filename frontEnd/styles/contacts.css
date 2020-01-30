@@ -196,7 +196,7 @@ address {
 
 /* For floating labels */
 
-.input-surround {
+#search-surround {
 	position: relative;
 
 	width: 60%;
@@ -205,7 +205,7 @@ address {
 	margin-bottom: 2em;
 }
 
-.input-surround input {
+#search-surround input {
 	height: 2em;
 	width: 100%;
 
@@ -217,7 +217,7 @@ address {
 	color: var(--white);
 }
 
-.input-surround label {
+#search-surround label {
 	color: var(--off-white);
 
 	text-align: left;
@@ -238,14 +238,14 @@ address {
 	justify-content: flex-start;
 }
 
-.input-surround label img {
+#search-surround label img {
 	height: 18px;
 	width: 18px;
 
 	margin-right: 4px;
 }
 
-.input-surround input:focus + label {
+#search-surround input:focus + label {
 	top: 2.3em;
 
 	font-size: 18px;
@@ -253,7 +253,7 @@ address {
 	color: var(--off-white);
 }
 
-.input-surround input:focus + label img {
+#search-surround input:focus + label img {
 	width: 14px;
 	height: 14px;
 }

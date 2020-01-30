@@ -291,11 +291,16 @@ if (document.cookie !== ``) {
 
 		login.then(
 			data => {
-				mainLogic(username);
+				if (data.code === 200) {
+					mainLogic(username);
+				}
+				else {
+					redirect();
+				}
 			}
 		).catch(
 			reason => {
-				redirect();
+				console.error(reason);
 			}
 		);
 	}
@@ -985,7 +990,7 @@ const mainLogic = username => {
 	const deleteButtons = document.getElementsByClassName(`delete-btn`);
 	const editButtons = document.getElementsByClassName(`edit-btn`);
 	const addButton = document.getElementById(`add-btn`);
-	const searchInput = document.getElementsByClassName(`input-surround`)[0].children[0];
+	const searchInput = document.getElementById(`search-surround`).children[0];
 	const logout = document.getElementById(`logout-btn`);
 	const errorDisplay = document.getElementById(`error`);
 
