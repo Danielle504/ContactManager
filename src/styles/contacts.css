@@ -83,12 +83,6 @@ h2 {
 	font-size: 28px;
 }
 
-header {
-	text-align: center;
-
-	flex-shrink: 0;
-}
-
 footer {
 	text-align: center;
 
@@ -113,9 +107,9 @@ main {
 /* Main body styling */
 
 #user-info {
-	position: fixed;
-	top: 0.5em;
-	right: 1em;
+	flex-shrink: 0;
+
+	margin: 0.6em 1.5em;
 
 	font-size: 20px;
 	text-align: right;
