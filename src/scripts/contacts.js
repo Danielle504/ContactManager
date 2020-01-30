@@ -361,7 +361,7 @@ const mainLogic = username => {
 		}
 
 		// change target when clicking on the name and image
-		if (target.nodeName === `H3` || target.nodeName == `img`) {
+		if (target.nodeName === `H3` || target.parentNode.nodeName === `H3`) {
 			contactClick({
 				target: target.parentNode.parentNode.parentNode
 			});
