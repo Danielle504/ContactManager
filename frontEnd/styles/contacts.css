@@ -131,6 +131,10 @@ main {
 	text-decoration: underline;
 }
 
+#logout-btn:focus {
+	border: 1px solid var(--off-white);
+}
+
 address {
 	font-style: normal;
 }
@@ -272,6 +276,10 @@ address {
 	transition: 0.1s;
 }
 
+.contact:hover {
+	background-color: var(--off-black);
+}
+
 .contact input {
 	border: none;
 	border-bottom: 1px solid var(--white);
@@ -326,7 +334,7 @@ address {
 	width: 70%;
 }
 
-.contact-info input[type="email"] {
+.email-input {
 	margin-left: 12px;
 }
 
@@ -427,10 +435,6 @@ address p {
 		background-color: var(--white);
 		color: var(--black);
 		text-decoration: underline;
-	}
-
-	.contact:hover {
-		background-color: var(--off-black);
 	}
 }
 
