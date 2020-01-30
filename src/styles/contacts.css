@@ -112,6 +112,31 @@ main {
 
 /* Main body styling */
 
+#user-info {
+	position: fixed;
+	top: 0.5em;
+	right: 1em;
+
+	font-size: 20px;
+	text-align: right;
+
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	justify-content: flex-start;
+}
+
+#logout-btn {
+	border: none;
+	background: none;
+	font-size: 16px;
+	padding: 0;
+
+	color: inherit;
+
+	text-decoration: underline;
+}
+
 address {
 	font-style: normal;
 }
@@ -164,20 +189,6 @@ address {
 
 	overflow-x: hidden;
 	overflow-y: auto;
-}
-
-#logout-btn {
-	border: none;
-
-	text-decoration: underline;
-	font-size: 20px;
-
-	background: none;
-	color: var(--white);
-
-	position: fixed;
-	top: 0.4em;
-	right: 1em;
 }
 
 /* For floating labels */
@@ -439,6 +450,21 @@ address p {
 @media screen and (max-width: 600px) {
 	#contacts-surround {
 		width: 90%;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	header {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	#user-info {
+		position: static;
+		align-items: center;
+		text-align: center;
 	}
 }
 

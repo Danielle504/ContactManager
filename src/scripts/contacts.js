@@ -272,6 +272,10 @@ if (document.cookie !== ``) {
 		);
 	}
 }
+else {
+	const index = window.location.href.lastIndexOf(`/contacts.html`);
+	window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
+}
 
 const mainLogic = username => {
 	let editing = false;
@@ -851,6 +855,9 @@ const mainLogic = username => {
 
 	const handleLogout = event => {
 		event.preventDefault();
+		document.cookie = `info=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+		const index = window.location.href.lastIndexOf(`/contacts.html`);
+		window.location.replace(`${window.location.href.slice(0, index)}/index.html`);
 	};
 
 	document.getElementById(`uname`).innerHTML = `${username} `;

@@ -1,40 +1,5 @@
 const url = `https://pregradcrisis.azurewebsites.net`;
 
-if (document.cookie !== ``) {
-	const cookie = decodeURIComponent(document.cookie);
-	const type = cookie.slice(0, 5);
-
-	if (type === `info=`) {
-		const [username, password] = cookie.slice(5).split(`password:`);
-
-		const login = new Promise((resolve, reject) => {
-			const request = new XMLHttpRequest();
-			const body = {
-				uid: username,
-				pword: md5(password)
-			};
-
-			request.open(`POST`, `${url}/login.php`);
-			request.setRequestHeader(`Content-type`, `application/json`)
-			request.onload = () => resolve(JSON.parse(request.responseText));
-			request.onerror = () => reject(request.statusText);
-			request.send(JSON.stringify(body));
-		});
-
-		login.then(
-			data => {
-				const index = window.location.href.lastIndexOf(`/index.html`);
-
-				window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
-			}
-		).catch(
-			reason => {
-				console.error(reason);
-			}
-		);
-	}
-}
-
 const md5 = string => {
 	const rotateLeft = (lValue, iShiftBits) => {
 		return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
@@ -263,8 +228,43 @@ const md5 = string => {
 
 	const temp = wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
 
-   	return temp.toLowerCase();
+	return temp.toLowerCase();
 };
+
+if (document.cookie !== ``) {
+	const cookie = decodeURIComponent(document.cookie);
+	const type = cookie.slice(0, 5);
+
+	if (type === `info=`) {
+		const [username, password] = cookie.slice(5).split(`password:`);
+
+		const login = new Promise((resolve, reject) => {
+			const request = new XMLHttpRequest();
+			const body = {
+				uid: username,
+				pword: md5(password)
+			};
+
+			request.open(`POST`, `${url}/login.php`);
+			request.setRequestHeader(`Content-type`, `application/json`)
+			request.onload = () => resolve(JSON.parse(request.responseText));
+			request.onerror = () => reject(request.statusText);
+			request.send(JSON.stringify(body));
+		});
+
+		login.then(
+			data => {
+				const index = window.location.href.lastIndexOf(`/index.html`);
+
+				window.location.replace(`${window.location.href.slice(0, index)}/contacts.html`);
+			}
+		).catch(
+			reason => {
+				console.error(reason);
+			}
+		);
+	}
+}
 
 document.addEventListener(`DOMContentLoaded`, () => {
 	let register = false;
