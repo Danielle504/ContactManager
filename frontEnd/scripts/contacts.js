@@ -863,13 +863,35 @@ const mainLogic = username => {
 		if (event.key === `Enter`) {
 			hideError();
 
-			const filtered =  contactArr.filter(contact => {
-				const contactName = ([contact.fname, contact.lname]).join(` `);
+			const search = new Promise((resolve, reject) => {
+				const request = new XMLHttpRequest();
+				const body = {
+					uid: username,
+					search: event.target.value
+				};
 
-				return contactName.match(new RegExp(`.*${event.target.value}.*`, `gi`));
+				request.open(`POST`, `${url}/searchSpecific.php`);
+				request.setRequestHeader(`Content-type`, `application/json`)
+				request.onload = () => resolve(JSON.parse(request.responseText));
+				request.onerror = () => reject(request.statusText);
+				request.send(JSON.stringify(body));
 			});
 
-			displayContacts(filtered);
+			search.then(
+				data => {
+					console.log(data);
+					if (data.code === 200) {
+						displayContacts(data.contacts);
+					}
+					else {
+						error(`Could not search for contacts. Please try again or wait until later.`);
+					}
+				}
+			).catch(
+				reason => {
+					console.error(reason);
+				}
+			);
 		}
 	};
 
