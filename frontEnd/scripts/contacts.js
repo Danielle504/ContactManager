@@ -440,7 +440,14 @@ const mainLogic = username => {
 		const confirm = () => {
 			yesButton.onclick = null;
 			noButton.onclick = null;
-			const cid = event.target.parentNode.parentNode.parentNode.parentNode.getAttribute(`id`);
+			const contactMain = event.target.parentNode.parentNode.parentNode.parentNode;
+			const cid = contactMain.getAttribute(`id`);
+
+			// if this is a contact that hasn't been created yet
+			if (cid === null) {
+				contactMain.remove();
+				editing = false;
+			}
 
 			// make api call to delete
 			const deleteContact = new Promise((resolve, reject) => {
