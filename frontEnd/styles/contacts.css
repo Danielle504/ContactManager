@@ -34,14 +34,15 @@
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-* {
+/*
+	Colors
 	--black: #0d0d0d;
 	--off-black: #333333;
 	--white: #f2f2f2;
 	--off-white: #b3b3b3;
 	--link: #8080ff;
 	--link-visited: #b3b3ff;
-}
+*/
 
 body {
 	font-family: 'Open Sans', Arial, Helvetica, sans-serif;
@@ -51,8 +52,8 @@ body {
 	display: flex;
 	flex-direction: column;
 
-	background: var(--black);
-	color: var(--white);
+	background: #0d0d0d;
+	color: #f2f2f2;
 }
 
 /* Basic Formatting styling */
@@ -66,11 +67,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-	color: var(--link);
+	color: #8080ff;
 }
 
 a:visited {
-	color: var(--link-visited);
+	color: #b3b3ff;
 }
 
 h1 {
@@ -132,7 +133,7 @@ main {
 }
 
 #logout-btn:focus {
-	border: 1px solid var(--off-white);
+	border: 1px solid #b3b3b3;
 }
 
 address {
@@ -145,11 +146,11 @@ address {
 	min-width: 180px;
 	margin: 10px;
 
-	border: 2px solid var(--white);
+	border: 2px solid #f2f2f2;
 	border-radius: 4px;
 
 	background-color: inherit;
-	color: var(--white);
+	color: #f2f2f2;
 
 	font-size: 18px;
 	font-weight: bold;
@@ -170,13 +171,13 @@ address {
 }
 
 #add-btn:focus {
-	background-color: var(--white);
-	color: var(--black);
+	background-color: #f2f2f2;
+	color: #0d0d0d;
 	text-decoration: underline;
 }
 
 #contacts-surround {
-	border: 3px solid var(--white);
+	border: 3px solid #f2f2f2;
 	border-radius: 6px;
 
 	width: 80%;
@@ -212,13 +213,13 @@ address {
 	font-size: 22px;
 
 	border: none;
-	border-bottom: 2px solid var(--white);
+	border-bottom: 2px solid #f2f2f2;
 	background: none;
-	color: var(--white);
+	color: #f2f2f2;
 }
 
 #search-surround label {
-	color: var(--off-white);
+	color: #b3b3b3;
 
 	text-align: left;
 	font-size: 22px;
@@ -250,7 +251,7 @@ address {
 
 	font-size: 18px;
 	text-align: left;
-	color: var(--off-white);
+	color: #b3b3b3;
 }
 
 #search-surround input:focus + label img {
@@ -277,15 +278,15 @@ address {
 }
 
 .contact:hover {
-	background-color: var(--off-black);
+	background-color: #333333;
 }
 
 .contact input {
 	border: none;
-	border-bottom: 1px solid var(--white);
+	border-bottom: 1px solid #f2f2f2;
 
 	background: none;
-	color: var(--white);
+	color: #f2f2f2;
 
 	font-family: 'Lato', Verdana, Geneva, sans-serif;
 	font-size: 22px;
@@ -299,7 +300,14 @@ address {
 	max-width: 300px;
 }
 
-.contact label {
+.first-name-label, .last-name-label {
+	color: #b3b3b3;
+	font-size: 16px;
+	width: 46%;
+	max-width: 300px;
+}
+
+.info-label {
 	font-size: 18px;
 	width: 90%;
 }
@@ -310,6 +318,7 @@ address {
 	align-items: center;
 	justify-content: flex-start;
 	width: 77%;
+	flex-wrap: wrap;
 }
 
 .contact-info {
@@ -361,7 +370,7 @@ address {
 
 	border: none;
 	border-radius: 100%;
-	background-color: var(--white);
+	background-color: #f2f2f2;
 }
 
 .edit-btn img {
@@ -409,7 +418,7 @@ address {
 	flex-grow: 0;
 	flex-shrink: 0;
 
-	background-color: var(--white);
+	background-color: #f2f2f2;
 }
 
 .confirmation-y {
@@ -419,7 +428,7 @@ address {
 
 .confirmation-n {
 	margin-left: 2px;
-	color: var(--black);
+	color: #0d0d0d;
 }
 
 h3 {
@@ -432,8 +441,8 @@ address p {
 
 @media (any-hover: hover) {
 	#add-btn:hover {
-		background-color: var(--white);
-		color: var(--black);
+		background-color: #f2f2f2;
+		color: #0d0d0d;
 		text-decoration: underline;
 	}
 }
