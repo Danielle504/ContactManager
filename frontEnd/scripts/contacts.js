@@ -548,7 +548,7 @@ const mainLogic = username => {
 			// last name doesn't need validation
 
 			// check email, should be valid format
-			const emailHTML = items.item(EMAIL).children[0];
+			const emailHTML = items.item(2).children[0];
 			if (!validate(emailHTML.value, `email`)) {
 				emailHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
 				editing = invalid = true;
@@ -560,7 +560,7 @@ const mainLogic = username => {
 			}
 
 			// check phone, should be valid format
-			const phoneHTML = items.item(PHONE).children[0];
+			const phoneHTML = items.item(3).children[0];
 			if (!validate(phoneHTML.value, `phone`)) {
 				phoneHTML.setAttribute(`style`, `border-bottom: 1px solid red;`);
 				editing = invalid = true;
@@ -697,6 +697,7 @@ const mainLogic = username => {
 				item.replaceWith(replacer);
 
 				replacer.append(document.createElement(`input`));
+				replacer.setAttribute(`class`, `info-label`);
 				replacer.children[0].value = value;
 
 				switch(label) {
@@ -726,17 +727,27 @@ const mainLogic = username => {
 
 			const fnameInput = document.createElement(`input`);
 			fnameInput.setAttribute(`type`, `text`);
-			fnameInput.setAttribute(`aria-label`, `First name`);
 			fnameInput.setAttribute(`class`, `first-name-input`);
+			fnameInput.setAttribute(`id`, `${contact.getAttribute(`id`)}-fname`);
 			fnameInput.value = fnameVal;
+
+			const fnameLabel = document.createElement(`label`);
+			fnameLabel.setAttribute(`class`, `first-name-label`);
+			fnameLabel.setAttribute(`for`, `${contact.getAttribute(`id`)}-fname`);
+			fnameLabel.innerHTML = `First Name`;
 
 			const lnameInput = document.createElement(`input`);
 			lnameInput.setAttribute(`type`, `text`);
-			lnameInput.setAttribute(`aria-label`, `Last name`);
 			lnameInput.setAttribute(`class`, `last-name-input`);
+			lnameInput.setAttribute(`id`, `${contact.getAttribute(`id`)}-lname`);
 			lnameInput.value = lnameVal;
 
-			name.replaceWith(fnameInput, lnameInput);
+			const lnameLabel = document.createElement(`label`);
+			lnameLabel.setAttribute(`class`, `last-name-label`);
+			lnameLabel.setAttribute(`for`, `${contact.getAttribute(`id`)}-lname`);
+			lnameLabel.innerHTML = `Last Name`;
+
+			name.replaceWith(fnameInput, lnameInput, fnameLabel,lnameLabel);
 
 			editing = true;
 		}
