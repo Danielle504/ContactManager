@@ -48,6 +48,8 @@ body {
 
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
 	background: #0d0d0d;
 	color: #f2f2f2;
@@ -66,20 +68,10 @@ h1 {
 
 header {
 	text-align: center;
-
-	flex-shrink: 0;
-}
-
-footer {
-	text-align: center;
-
-	flex-shrink: 0;
 }
 
 main {
 	text-align: center;
-
-	flex-grow: 1;
 
 	display: flex;
 	flex-direction: column;
@@ -96,7 +88,7 @@ main {
 	align-items: center;
 
 	width: 300px;
-	height: 400px;
+	margin-top: 1em;
 }
 
 form {
