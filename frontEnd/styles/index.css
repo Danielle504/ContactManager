@@ -1,0 +1,219 @@
+@font-face {
+	font-family: 'Lato';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v16/S6uyw4BMUTPHjx4wXg.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Lato';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh6UVSwiPGQ.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: local('Open Sans Regular'), local('OpenSans-Regular'), url(https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFVZ0b.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v17/mem5YaGs126MiZpBA-UN7rgOUuhp.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
+	Colors
+	--black: #0d0d0d;
+	--white: #f2f2f2;
+	--off-white: #b3b3b3;
+*/
+
+body {
+	font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+
+	min-height: 100vh;
+
+	display: flex;
+	flex-direction: column;
+
+	background: #0d0d0d;
+	color: #f2f2f2;
+}
+
+/* Basic Formatting styling */
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Lato', Verdana, Geneva, sans-serif;
+}
+
+h1 {
+	font-size: 32px;
+	font-weight: 700;
+}
+
+header {
+	text-align: center;
+
+	flex-shrink: 0;
+}
+
+footer {
+	text-align: center;
+
+	flex-shrink: 0;
+}
+
+main {
+	text-align: center;
+
+	flex-grow: 1;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Main body styling */
+
+#form-surround {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	width: 300px;
+	height: 400px;
+}
+
+form {
+	text-align: center;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+input {
+	height: 2em;
+	width: 100%;
+
+	border: none;
+	border-bottom: 1px solid #f2f2f2;
+	background: none;
+	color: #f2f2f2;
+}
+
+.input-surround {
+	font-size: 18px;
+
+	margin: 10px;
+	width: 80%;
+}
+
+#error-notifier {
+	color: red;
+	font-size: 16px;
+}
+
+#success-notifier {
+	color: green;
+	font-size: 16px;
+}
+
+/* For floating labels */
+
+form > div {
+	position: relative;
+}
+
+label {
+	color: #b3b3b3;
+
+	position: absolute;
+	top: 4px;
+	left: 0;
+	width: 40%;
+
+	transition: 0.2s;
+}
+
+input:focus + label {
+	top: 2.5em;
+
+	font-size: 14px;
+	text-align: left;
+	color: #b3b3b3;
+}
+
+/* Buttons */
+
+#send-btn {
+	border: 2px solid #f2f2f2;
+	border-radius: 4px;
+
+	background-color: inherit;
+	color: #f2f2f2;
+
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+
+	height: 2em;
+	width: 80%;
+	margin-top: 15px;
+	margin-bottom: 4px;
+
+	transition: background-color 0.2s;
+}
+
+#send-btn:focus {
+	color: #0d0d0d;
+	background-color: #f2f2f2;
+	text-decoration: underline;
+}
+
+#toggle-type-btn {
+	border: 1px solid #0d0d0d;
+
+	font-size: 16px;
+	text-decoration: underline;
+
+	background-color: inherit;
+	color: #f2f2f2;
+}
+
+#toggle-type-btn:focus {
+	border: 1px solid #b3b3b3;
+}
+
+@media (any-hover: hover) {
+	#send-btn:hover {
+		color: #0d0d0d;
+		background-color: #f2f2f2;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	label:hover {
+		cursor: text;
+	}
+
+	#toggle-type-btn:hover {
+		cursor: pointer;
+	}
+}

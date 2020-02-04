@@ -1,0 +1,61 @@
+pregradcrisis.azurewebsites.net
+
+endpoints subject to change
+
+WORKING
+/adduser.php
+POST
+Register:
+{
+	"uid": <id>,
+	"pword": <pword>
+}
+
+/login.php
+POST
+Log in:
+{
+	"uid": <uid>
+	"pword": <pword>
+}
+
+WORKING
+/searchContacts.php
+POST
+Get Contact List:
+{
+	"uid": <id>
+}
+
+WORKING
+/addContact.php
+POST
+Add Contact:
+{
+	"uid": <id>
+	"fname" <fname>,
+	"lname" <lname>,
+	"phone" <phone>,
+	"email": <email>
+}
+sends back cid
+
+/editContact.php
+POST
+Edit a contact:
+{
+	"uid": <uid>,
+	"cid": <cid>,
+	"fname": <fname>,
+	"lname": <lname>,
+	"phone": <phone>,
+	"email": <email>
+}
+
+/deleteContact.php
+POST
+Delete a contact
+{
+	"uid": <uid>,
+	"cid": <cid>
+}
