@@ -5,6 +5,7 @@ primary key (uid)
 );
 
 create table contact(
+PRIMARY KEY cid varchar(60),
 fname varchar(60) not null,
 lname varchar(60),
 phone varchar(60) not null,
