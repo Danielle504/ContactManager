@@ -19,20 +19,20 @@
   $json = file_get_contents('php://input');
   $obj = json_decode($json);
 
-  $query = "INSERT into users (uid, pword)
-                            VALUES ('$obj->uid', '$obj->pword')";
-
-  if (!mysqli_query($con, $query))
+  $query = $con->prepare("INSERT into users VALUES(?, ?)");
+  $query->bind_param("ss", $obj->uid, $obj->pword);
+ 
+  if (!$query->execute())
   {
-    $obj->error = "Error: " . mysqli_error($con);
+    $obj->error = ("Error description: " . mysqli_error($con));
     $obj->code = 400;
     $json = json_encode($obj);
     echo $json;
-    exit();
+    die();
   }
 
   $obj->code = 200;
   $json = json_encode($obj);
   echo $json;
-  sqlsrv_close($con);
+  mysqli_close($con);
 ?>

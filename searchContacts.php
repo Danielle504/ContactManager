@@ -1,13 +1,14 @@
 <?php
-  $serverName = "pregradcrisis.database.windows.net";
-  $connectionOptions = array("Database" => "contactdb",
-      "Uid" => "PGC41",
-      "PWD" => "P660224chaz0015");
-
-  $con = sqlsrv_connect($serverName, $connectionOptions);
-
-  if ($con === false)
+  $server = "azcontact.mysql.database.azure.com";
+  $user = "PGC42@azcontact";
+  $password = "P660224chaz0015";
+  $database = "contact_manager";
+  $con = mysqli_connect($server, $user, $password, $database);
+  if (!$con)
   {
+    $obj->error = "Error: Unable to connect to MySQL." . PHP_EOL .
+                  "\n" ."Debugging errno: " . mysqli_connect_errno() . PHP_EOL .
+                  "\n" . "Debugging error: " . mysqli_connect_error() . PHP_EOL;
     $obj->code = 500;
     $json = json_encode($obj);
     echo $json;
@@ -19,25 +20,39 @@
 
   $query = "SELECT * FROM contacts
                           WHERE
-                          uid = '$obj->uid'";
-  $contacts = [];
-
-  if (!sqlsrv_query($con, $query))
+                          users_uid = '$obj->uid'";
+    
+  $resultset = mysqli_query($con, $query);
+    
+  if (!mysqli_query($con, $query))
   {
+    $obj->error = "Error: " . mysqli_error($con);
     $obj->code = 400;
     $json = json_encode($obj);
     echo $json;
+    mysqli_close($con);
     exit();
   }
-
-  while ($row = sqlsrv_fetch_array($query, SQLSRV_FETCH_NUMERIC))
+               
+   $contacts = array();
+    
+    while ($row = mysqli_fetch_assoc($resultset))
   {
-    $contacts [] = $row;
+    $contacts[] = $row;
   }
 
-  $obj->contacts = $contacts [];
+  $obj->contacts = $contacts;
   $obj->code = 200;
   $json = json_encode($obj);
+   if ($json === false)
+   {
+       $json = json_encode(array("jsonError", json_last_error_msg()));
+       if ($json === false)
+       {
+        $json = '{"jsonError": "unknown"}';
+       }
+       http_response_code(400);
+   }
   echo $json;
-  sqlsrv_close($con);
+  mysqli_close($con); 
 ?>

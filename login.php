@@ -1,13 +1,15 @@
 <?php
-  $serverName = "pregradcrisis.database.windows.net";
-  $connectionOptions = array("Database" => "contactdb",
-      "Uid" => "PGC41",
-      "PWD" => "P660224chaz0015");
+  $server = "azcontact.mysql.database.azure.com";
+  $user = "PGC42@azcontact";
+  $password = "P660224chaz0015";
+  $database = "contact_manager";
+  $con = mysqli_connect($server, $user, $password, $database);
 
-  $con = sqlsrv_connect($serverName, $connectionOptions);
-
-  if ($con === false)
+  if (!$con)
   {
+    $obj->error = "Error: Unable to connect to MySQL." . PHP_EOL .
+                  "\n" . "Debugging errno: " . mysqli_connect_errno() . PHP_EOL .
+                  "\n" . "Debugging error: " . mysqli_connect_error() . PHP_EOL;
     $obj->code = 500;
     $json = json_encode($obj);
     echo $json;
@@ -16,28 +18,30 @@
 
   $json = file_get_contents('php://input');
   $obj = json_decode($json);
-  $uid = $obj->uid;
-  $pword = $obj->pword;
 
-  $resultset = sqlsrv_query($con, "SELECT uid FROM users
-                                    WHERE uid = '$uid'
-                                    AND pword = '$pword'"
-                                    );
-  $numrows = sqlsrv_num_rows($resultset);
+  $query = $con->prepare("SELECT uid FROM users
+                                    WHERE uid = ?
+                                    AND pword = ?");
 
-  if ($numrows < 1)
-  if (!sqlsrv_query($con, $query))
+  $query->bind_param("ss", $obj->uid, $obj->pword);
+  if($query->execute())
+  {
+      $query->store_result();
+      $query->fetch();
+  }
+  
+  if(($query->num_rows) < 1)
   {
     $obj->code = 400;
-    $obj->info = "Login was incorrect."
+    $obj->info = "Login was incorrect.";
     $json = json_encode($obj);
     echo $json;
+    mysqli_close($con);
     exit();
   }
 
   $obj->code = 200;
-  $obj->cid = $cid;
   $json = json_encode($obj);
   echo $json;
-  sqlsrv_close($con);
+  mysqli_close($con);
  ?>

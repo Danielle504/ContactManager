@@ -1,51 +1,47 @@
 <?php
-  $serverName = "pregradcrisis.database.windows.net";
-  $connectionOptions = array("Database" => "contactdb",
-      "Uid" => "PGC41",
-      "PWD" => "P660224chaz0015");
+  $server = "azcontact.mysql.database.azure.com";
+  $user = "PGC42@azcontact";
+  $password = "P660224chaz0015";
+  $database = "contact_manager";
+  $con = mysqli_connect($server, $user, $password, $database);
 
-  $con = sqlsrv_connect($serverName, $connectionOptions);
-
-  if ($con === false)
+  if (!$con)
   {
+    $obj->error = "Error: Unable to connect to MySQL." . PHP_EOL .
+                  "\n" . "Debugging errno: " . mysqli_connect_errno() . PHP_EOL .
+                  "\n" . "Debugging error: " . mysqli_connect_error() . PHP_EOL;
     $obj->code = 500;
     $json = json_encode($obj);
     echo $json;
     exit();
+  } 
+
+  $json = file_get_contents('php://input');
+  $obj = json_decode($json);
+
+
+  $query = $con->prepare("UPDATE contacts
+            SET fname = ?,
+                lname = ?,
+                email = ?,
+                phone = ?
+            WHERE
+                cid = '$obj->cid'");
+                
+  $query->bind_param("ssss", $obj->fname, $obj->lname, $obj->email, $obj->phone);
+ 
+  if (!$query->execute())
+  {
+   $obj->error = "Error: " . mysqli_error($con);
+   $obj->code = 400;
+   $json = json_encode($obj);
+   echo $json;
+   mysqli_close($con);
+   exit();
   }
 
-$permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-do {
-  $cid = substr(str_shuffle($permitted_chars), 0, 16);
-  $resultset = sqlsrv_query($con, "SELECT cid FROM contacts
-                                    WHERE cid = '$cid'"
-                                    );
-  $numrows = sqlsrv_num_rows($resultset);
-} while ($numrows > 0);
-
-$json = file_get_contents('php://input');
-$obj = json_decode($json);
-
-
-$query =  "UPDATE 'contact'
-            SET f_name = '$obj->f_name'
-                l_name = '$obj->l_name'
-                email = '$obj->email'
-                phone = '$obj->phone'
-            WHERE
-                '$obj->cid' = cid";
-
-if (!sqlsrv_query($con, $query))
-{
-  $obj->code = 400;
+  $obj->code = 200;
   $json = json_encode($obj);
   echo $json;
-  exit();
-}
-
-$obj->code = 200;
-$obj->cid = $cid;
-$json = json_encode($obj);
-echo $json;
-sqlsrv_close($con);
+  mysqli_close($con);
 ?>
