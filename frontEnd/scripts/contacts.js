@@ -315,6 +315,28 @@ else {
 const mainLogic = username => {
 	let editing = false;
 
+	const encode = string => {
+		const amp = /&/g;
+		const lt = /</g;
+		const gt = />/g;
+		const sq = /'/g;
+		const dq = /"/g;
+		const sl = /\//g;
+
+		return string.replace(amp, `&amp;`).replace(lt, `&lt;`).replace(gt, `&gt;`).replace(sq, `&#x27;`).replace(dq, `&quot;`).replace(sl, `&#x2F;`);
+	};
+
+	const decode = string => {
+		const amp = /&amp;/g;
+		const lt = /&lt;/g;
+		const gt = /&gt;/g;
+		const sq = /&#x27;/g;
+		const dq = /&quot;/g;
+		const sl = /&#x2F;/g;
+
+		return string.replace(amp, `&`).replace(lt, `<`).replace(gt, `>`).replace(sq, `'`).replace(dq, `"`).replace(sl, `/`);
+	};
+
 	const error = message => {
 		errorDisplay.setAttribute(`aria-hidden`, `false`);
 		errorDisplay.innerHTML = message;
@@ -698,7 +720,7 @@ const mainLogic = username => {
 
 				replacer.append(document.createElement(`input`));
 				replacer.setAttribute(`class`, `info-label`);
-				replacer.children[0].value = value;
+				replacer.children[0].value = decode(value);
 
 				switch(label) {
 					case `Email`:
@@ -722,8 +744,8 @@ const mainLogic = username => {
 
 			// replace the name with an input
 			const name = contact.getElementsByTagName(`H3`).item(0);
-			const fnameVal = name.children[0].innerHTML;
-			const lnameVal = name.children[1].innerHTML;
+			const fnameVal = decode(name.children[0].innerHTML);
+			const lnameVal = decode(name.children[1].innerHTML);
 
 			const fnameInput = document.createElement(`input`);
 			fnameInput.setAttribute(`type`, `text`);
@@ -962,12 +984,12 @@ const mainLogic = username => {
 		const hover = contHTML.children[HOVER_BOX];
 
 		const name = hover.children[MAIN].children[NAME];
-		name.children[0].innerHTML = info.fname;
-		name.children[1].innerHTML = info.lname;
+		name.children[0].innerHTML = encode(info.fname);
+		name.children[1].innerHTML = encode(info.lname);
 
 		const contInfo = contHTML.children[INFO].children[ADDRESS];
-		contInfo.children[EMAIL].innerHTML = `Email: ${info.email}`;
-		contInfo.children[PHONE].innerHTML = `Phone: ${phoneFormatted}`;
+		contInfo.children[EMAIL].innerHTML = `Email: ${encode(info.email)}`;
+		contInfo.children[PHONE].innerHTML = `Phone: ${encode(phoneFormatted)}`;
 	};
 
 	const sortContacts = contacts => {
