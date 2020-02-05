@@ -300,7 +300,7 @@ if (document.cookie !== ``) {
 			}
 		).catch(
 			reason => {
-				console.error(reason);
+				redirect();
 			}
 		);
 	}
@@ -897,7 +897,6 @@ const mainLogic = username => {
 
 			search.then(
 				data => {
-					console.log(data);
 					if (data.code === 200) {
 						displayContacts(data.contacts);
 					}
@@ -907,7 +906,7 @@ const mainLogic = username => {
 				}
 			).catch(
 				reason => {
-					console.error(reason);
+					error(`Could not search for contacts. Please try again or wait until later.`);
 				}
 			);
 		}
