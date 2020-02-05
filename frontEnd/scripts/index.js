@@ -295,11 +295,13 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 	const succeeded = message => {
 		successNotifier.setAttribute(`aria-hidden`, `false`);
+		errorNotifier.setAttribute(`aria-hidden`, `true`);
 		successNotifier.innerHTML = message;
 	};
 
 	const error = message => {
 		errorNotifier.setAttribute(`aria-hidden`, `false`);
+		successNotifier.setAttribute(`aria-hidden`, `true`);
 		errorNotifier.innerHTML = message;
 	};
 
@@ -345,7 +347,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 				register.then(
 					data => {
-						console.log(data.code);
 						switch(data.code) {
 							case 200:
 								toggleType();
@@ -366,11 +367,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
 				);
 			}
 			else {
+				succeeded(`Logging you in now...`);
 				login(username, password,
 					data => {
 						switch(data.code) {
 							case 200:
-								succeeded(`Logging you in now...`);
 								document.cookie = `username=${encodeURIComponent(username)};samesite=strict`;
 								document.cookie = `password=${encodeURIComponent(password)};samesite=strict`;
 								redirect();
